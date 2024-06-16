@@ -50,7 +50,7 @@ public class Utils {
     private static final Logger logger = LogManager.getLogger(Utils.class);
     private static final String MOJANG_API_NAME_TO_UUID = "https://api.mojang.com/users/profiles/minecraft/";
     private static final Pattern UUID_MOJANG_API_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
-    private static final DateTimeFormatter readableDateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy H:m:ss");
+    private static final DateTimeFormatter readableDateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private static final Map<String, UUID> uuidNameCache = new HashMap<>();
 
     /**
