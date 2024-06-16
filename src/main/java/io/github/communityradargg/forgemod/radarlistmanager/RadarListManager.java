@@ -211,7 +211,6 @@ public class RadarListManager {
     public boolean registerPublicList(final @NotNull String namespace, final @NotNull String prefix, final @NotNull String url) {
         final boolean namespaceExists = getNamespaces().stream()
                 .anyMatch(namespace::equalsIgnoreCase);
-
         if (namespaceExists) {
             return false;
         }
@@ -258,7 +257,7 @@ public class RadarListManager {
     }
 
     /**
-     * Loads the private lists.
+     * Loads the private lists from disk.
      */
     public void loadPrivateLists() {
         getJsonUrls(directoryPath)
@@ -274,7 +273,10 @@ public class RadarListManager {
      */
     private @NotNull Optional<RadarList> loadRadarListFromFile(final @NotNull String filePath) {
         try (final FileReader reader = new FileReader(filePath)) {
-            return Optional.of(gson.fromJson(reader, new TypeToken<RadarList>() {}.getType()));
+            final RadarList list = gson.fromJson(reader, new TypeToken<RadarList>() {}.getType());
+            if (list.validateList()) {
+                return Optional.of(list);
+            }
         } catch (final IOException | IllegalStateException | JsonIOException | JsonSyntaxException e) {
             logger.error("Could not load list from file", e);
         }

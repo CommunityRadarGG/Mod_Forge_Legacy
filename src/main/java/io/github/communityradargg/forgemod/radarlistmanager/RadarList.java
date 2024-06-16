@@ -15,6 +15,8 @@
  */
 package io.github.communityradargg.forgemod.radarlistmanager;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import io.github.communityradargg.forgemod.CommunityRadarMod;
@@ -177,11 +179,21 @@ public class RadarList {
      */
     private void loadPublicList() {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(this.url).openStream()))) {
-            final List<RadarListEntry> players = RadarListManager.getGson().fromJson(reader, new TypeToken<List<RadarListEntry>>() {}.getType());
+            final List<RadarListEntry> players = RadarListManager.getGson()
+                    .fromJson(reader, new TypeToken<List<RadarListEntry>>() {}.getType());
             players.forEach(this::loadRadarListEntry);
-        } catch (final IOException e) {
+        } catch (final IOException | JsonIOException | JsonSyntaxException e) {
             logger.error("Could not load public list", e);
         }
+    }
+
+    /**
+     * Validates the loaded list.
+     *
+     * @return Returns, whether the list is valid or not.
+     */
+    public boolean validateList() {
+        return !(namespace == null || url == null || playerMap == null || visibility == null || prefix == null);
     }
 
     /**
