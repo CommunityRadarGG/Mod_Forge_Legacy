@@ -56,7 +56,7 @@ public class CommunityRadarMod {
     public void init(final FMLInitializationEvent event) {
         logger.info("Starting the mod '" + MODID + "' with the version '" + VERSION + "'!");
         final File directoryPath = Paths.get(new File("")
-                .getAbsolutePath(),"labymod-neo", "configs", "communityradar")
+                .getAbsolutePath(),"communityradar", "lists")
                 .toFile();
         if (!directoryPath.exists() && !directoryPath.mkdirs()) {
             logger.error("Could not create directory: {}", directoryPath);
