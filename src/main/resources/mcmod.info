@@ -1,6 +1,6 @@
 [
     {
-        "modid": "communityradargg",
+        "modid": "communityradar",
         "name": "CommunityRadar Mod - Official - 1.8.9",
         "description": "The Official CommunityRadar Forge 1.8.9 Mod.",
         "version": "${version}",
@@ -12,7 +12,7 @@
             "BlockyTheDev"
         ],
         "credits": "CommunityRadar-Team, BlockyTheDev, MrMystery",
-        "logoFile": "assets/communityradargg/logo.jpeg",
+        "logoFile": "assets/communityradar/icon.png",
         "screenshots": [],
         "dependencies": []
     }
