@@ -44,14 +44,13 @@ public class RadarList {
     private final int version = 1;
     @SerializedName("namespace")
     private final String namespace;
-    @SerializedName("url")
-    private final String url;
     @SerializedName("playerMap")
     private final Map<UUID, RadarListEntry> playerMap;
     @SerializedName("visibility")
     private final RadarListVisibility visibility;
     @SerializedName("prefix")
     private String prefix;
+    private transient String url;
 
     /**
      * Constructs a {@link RadarList}.
@@ -133,6 +132,15 @@ public class RadarList {
      */
     public @NotNull String getUrl() {
         return url;
+    }
+
+    /**
+     * Sets the url of the list.
+     *
+     * @param url The url to set.
+     */
+    public void setUrl(final @NotNull String url) {
+        this.url = url;
     }
 
     /**

@@ -274,6 +274,7 @@ public class RadarListManager {
     private @NotNull Optional<RadarList> loadRadarListFromFile(final @NotNull String filePath) {
         try (final FileReader reader = new FileReader(filePath)) {
             final RadarList list = gson.fromJson(reader, new TypeToken<RadarList>() {}.getType());
+            list.setUrl(filePath);
             if (list.validateList()) {
                 return Optional.of(list);
             }
