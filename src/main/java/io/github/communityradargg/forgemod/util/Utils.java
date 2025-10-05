@@ -102,7 +102,7 @@ public class Utils {
                 connection.setConnectTimeout(3000);
                 connection.setReadTimeout(3000);
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", CommunityRadarMod.MODID + "/" + CommunityRadarMod.VERSION);
+                connection.setRequestProperty("User-Agent", CommunityRadarMod.MOD_ID + "/" + CommunityRadarMod.VERSION);
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     logger.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());

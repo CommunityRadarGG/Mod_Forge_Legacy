@@ -4,8 +4,8 @@
         "name": "CommunityRadar Mod - Official - 1.8.9",
         "description": "The Official CommunityRadar Forge 1.8.9 Mod.",
         "version": "${version}",
-        "mcversion": "${mcversion}",
-        "url": "https://discord.community-radar.de",
+        "mcversion": "${mc_version}",
+        "url": "https://community-radar.de",
         "updateUrl": "",
         "authorList": [
             "MrMystery",

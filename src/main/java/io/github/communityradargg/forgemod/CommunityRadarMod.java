@@ -36,12 +36,12 @@ import java.nio.file.Paths;
 /**
  * This class represents the main class of the mod.
  */
-@Mod(modid = CommunityRadarMod.MODID, version = CommunityRadarMod.VERSION)
+@Mod(modid = CommunityRadarMod.MOD_ID, version = CommunityRadarMod.VERSION)
 public class CommunityRadarMod {
     /** The id of the mod. */
-    public static final String MODID = "communityradar";
+    public static final String MOD_ID = "@MOD_ID@";
     /** The version of the mod. */
-    public static final String VERSION = "1.1.3-1.8.9-SNAPSHOT";
+    public static final String VERSION = "@VERSION@";
     private static final Logger logger = LogManager.getLogger(CommunityRadarMod.class);
     private static RadarListManager listManager;
     private boolean onGrieferGames = false;
@@ -54,7 +54,7 @@ public class CommunityRadarMod {
     @EventHandler
     @SuppressWarnings("unused") // called by the mod loader
     public void init(final FMLInitializationEvent event) {
-        logger.info("Starting the mod '" + MODID + "' with the version '" + VERSION + "'!");
+        logger.info("Starting the mod '" + MOD_ID + "' with the version '" + VERSION + "'!");
         final File directoryPath = Paths.get(new File("")
                 .getAbsolutePath(),"communityradar", "lists")
                 .toFile();
@@ -68,7 +68,7 @@ public class CommunityRadarMod {
         listManager.loadPrivateLists();
         registerEvents();
         registerCommands();
-        logger.info("Successfully started the mod '" + MODID + "'!");
+        logger.info("Successfully started the mod '" + MOD_ID + "'!");
     }
 
     /**

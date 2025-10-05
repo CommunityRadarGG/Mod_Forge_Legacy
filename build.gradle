@@ -13,104 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import dev.architectury.pack200.java.Pack200Adapter
+
 plugins {
     id "java"
     id "idea"
-    id "net.minecraftforge.gradle.forge"
-    id 'org.cadixdev.licenser' version '0.6.1'
+    id "gg.essential.loom" version "1.11.37"
+    id "dev.architectury.architectury-pack200" version "0.1.3"
+    id "com.diffplug.spotless" version "7.2.1"
+    id 'net.kyori.blossom' version '1.3.1'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+sourceSets {
+    main {
+        output.setResourcesDir(java.classesDirectory)
+    }
+}
+
+base {
+    archivesName = project.mod_id
 }
 
 repositories {
     mavenCentral()
-    maven { url = "https://jitpack.io/" }
-}
-
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
-
-compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
-    options.encoding = "UTF-8"
-}
-
-
-minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
-    mappings = "stable_22"
-    makeObfSourceJar = false
-}
-
-configurations {
-    include
-    implementation.extendsFrom(include)
-
-    configurations {
-        include
-        implementation.extendsFrom(include)
-        runtimeOnly.canBeResolved = true
-    }
 }
 
 dependencies {
-    include fileTree(include: ["*.jar"], dir: "libs")
-    implementation group: 'org.jetbrains', name: 'annotations', version: '15.0'
+    minecraft("com.mojang:minecraft:${project.minecraft_version}")
+    mappings("de.oceanlabs.mcp:mcp_stable:${project.mappings_version}")
+    forge("net.minecraftforge:forge:${project.forge_version}")
+}
+
+loom {
+    forge {
+        pack200Provider.set(new Pack200Adapter())
+        // accessTransformer("src/main/resources/META-INF/${project.mod_id}_at.cfg")
+    }
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+tasks.register("includeLicenses", Copy) {
+    from(project.projectDir) {
+        include("LICENSE")
+        include("NOTICE")
+    }
+
+    into(sourceSets.main.output.resourcesDir)
 }
 
 processResources {
+    dependsOn tasks.includeLicenses
+
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mc_version", project.minecraft_version
 
     filesMatching("mcmod.info") {
-        expand "version": project.version, "mcversion": project.minecraft.version
+        expand "version": project.version, "mc_version": project.minecraft_version, "mod_id": project.mod_id
     }
 }
 
-tasks.register('moveResources') {
-    doLast {
-        ant.move file: "${buildDir}/resources/main",
-                todir: "${buildDir}/classes/java"
+blossom {
+    replaceTokenIn("src/main/java/io/github/communityradargg/forgemod/CommunityRadarMod.java")
+    replaceToken("@VERSION@", project.version)
+    replaceToken("@MOD_ID@", project.mod_id)
+}
+
+spotless {
+    java {
+        licenseHeaderFile(rootProject.file("HEADER"))
+        endWithNewline()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        removeWildcardImports()
     }
-}
 
-moveResources.dependsOn(processResources)
-classes.dependsOn(moveResources)
-
-
-tasks.register('deobfJar', Jar) {
-    from sourceSets.main.output
-    archiveClassifier = 'deobf'
-}
-
-tasks.register('srcJar', Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier = 'sources'
-}
-
-artifacts {
-    archives deobfJar
-    archives srcJar
-}
-
-jar {
-    from("LICENSE") {
-        rename {
-            "${it}_${project.archives_base_name}"
-        }
-    }
-}
-
-license {
-    setNewLine(false)
-    header(project.file("HEADER"))
-    properties {
-        year = "2024 - present"
-        name = "CommunityRadarGG <https://community-radar.de/>"
-    }
-    tasks {
-        gradle {
-            files.from('build.gradle', 'settings.gradle', 'gradle.properties')
-        }
+    kotlin {
+        licenseHeaderFile(rootProject.file("HEADER"))
+        endWithNewline()
+        trimTrailingWhitespace()
     }
 }

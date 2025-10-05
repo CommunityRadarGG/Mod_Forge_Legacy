@@ -17,19 +17,15 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://jitpack.io/" }
+        maven { url "https://maven.fabricmc.net" }
+        maven { url "https://maven.minecraftforge.net" }
+        maven { url "https://repo.essential.gg/repository/maven-public" }
+        maven { url "https://maven.architectury.dev/" }
     }
+}
 
-    resolutionStrategy {
-        eachPlugin {
-            switch (requested.id.id) {
-                case "net.minecraftforge.gradle.forge":
-                    useModule("com.github.ccbluex:ForgeGradle:${forgegradle_version}")
-                    break
-            }
-        }
-    }
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
 rootProject.name = 'communityradar-forge'
