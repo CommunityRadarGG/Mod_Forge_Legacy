@@ -119,5 +119,7 @@ val processJavaSourceReplacement = tasks.register<Copy>("processJavaSourceReplac
 }
 
 sourceSets.named("main") {
-    java.srcDir(processJavaSourceReplacement.map { sourceReplacementOutput })
+    java.setSrcDirs(
+        listOf(processJavaSourceReplacement.map { sourceReplacementOutput.get().asFile })
+    )
 }
