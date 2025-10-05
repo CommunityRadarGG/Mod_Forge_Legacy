@@ -3,7 +3,6 @@
 ggEssentialLoom = "1.11.37"
 architecturyPack200 = "0.1.3"
 spotless = "7.2.1"
-blossom = "1.3.1"
 
 # libraries
 minecraft = "1.8.9"
@@ -19,6 +18,5 @@ forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
 ggEssentialLoom = { id = "gg.essential.loom", version.ref = "ggEssentialLoom" }
 architecturyPack200 = { id = "dev.architectury.architectury-pack200", version.ref = "architecturyPack200" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 
 [bundles]

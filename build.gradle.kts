@@ -20,7 +20,6 @@ plugins {
     alias(libs.plugins.ggEssentialLoom)
     alias(libs.plugins.architecturyPack200)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.blossom)
 }
 
 version = project.extra.get("mod_version") as String
@@ -90,12 +89,6 @@ sourceSets {
     }
 }
 
-blossom {
-    replaceTokenIn("src/main/java/io/github/communityradargg/forgemod/CommunityRadarMod.java")
-    replaceToken("@VERSION@", project.version)
-    replaceToken("@MOD_ID@", project.mod_id)
-}
-
 spotless {
     java {
         licenseHeaderFile(rootProject.file("HEADER"))
@@ -110,4 +103,21 @@ spotless {
         endWithNewline()
         trimTrailingWhitespace()
     }
+}
+
+// source replacement
+val sourceReplacementOutput = layout.buildDirectory.dir("generated/sources/sourceReplacement/java")
+val processJavaSourceReplacement = tasks.register<Copy>("processJavaSourceReplacement") {
+    from("src/main/java") {
+        include("**/*.java")
+        filter { line ->
+            line.replace("@MOD_ID@", project.extra.get("mod_id") as String)
+                .replace("@VERSION@", project.version.toString())
+        }
+    }
+    into(sourceReplacementOutput)
+}
+
+sourceSets.named("main") {
+    java.srcDir(processJavaSourceReplacement.map { sourceReplacementOutput })
 }
