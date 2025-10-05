@@ -17,24 +17,17 @@ import dev.architectury.pack200.java.Pack200Adapter
 
 plugins {
     id("java")
-    id("idea")
     alias(libs.plugins.ggEssentialLoom)
     alias(libs.plugins.architecturyPack200)
     alias(libs.plugins.spotless)
     alias(libs.plugins.blossom)
 }
 
-version = project.mod_version
-group = project.maven_group
-
-sourceSets {
-    main {
-        output.setResourcesDir(java.classesDirectory)
-    }
-}
+version = project.extra.get("mod_version") as String
+group = project.extra.get("maven_group") as String
 
 base {
-    archivesName = project.mod_id
+    archivesName.set(project.extra.get("mod_id") as String)
 }
 
 repositories {
@@ -49,7 +42,7 @@ dependencies {
 
 loom {
     forge {
-        pack200Provider.set(new Pack200Adapter())
+        pack200Provider.set(Pack200Adapter())
         // accessTransformer("src/main/resources/META-INF/${project.mod_id}_at.cfg")
     }
 }
@@ -58,31 +51,42 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
-}
-
-tasks.register("includeLicenses", Copy) {
-    from(project.projectDir) {
-        include("LICENSE")
-        include("NOTICE")
+tasks {
+    withType<JavaCompile> {
+        options.encoding = Charsets.UTF_8.name()
     }
 
-    into(sourceSets.main.output.resourcesDir)
+    register<Copy>("includeLicenses") {
+        from(project.projectDir) {
+            include("LICENSE", "NOTICE")
+        }
+
+        into(sourceSets["main"].output.resourcesDir!!)
+    }
+
+    withType<ProcessResources> {
+        dependsOn("includeLicenses")
+
+        // https://github.com/gradle/gradle/issues/861
+        outputs.upToDateWhen { false }
+
+        filteringCharset = Charsets.UTF_8.name()
+
+        filesMatching("mcmod.info") {
+            expand(
+                mapOf(
+                    "version" to project.version,
+                    "mc_version" to libs.versions.minecraft.get(),
+                    "mod_id" to project.extra.get("mod_id") as String
+                )
+            )
+        }
+    }
 }
 
-processResources {
-    dependsOn(tasks.includeLicenses)
-
-    inputs.property("version", project.version)
-    inputs.property("mc_version", libs.versions.minecraft.get())
-
-    filesMatching("mcmod.info") {
-        expand(
-            "version": project.version,
-            "mc_version": libs.versions.minecraft.get(),
-            "mod_id": project.mod_id
-        )
+sourceSets {
+    main {
+        output.setResourcesDir(java.classesDirectory)
     }
 }
 
