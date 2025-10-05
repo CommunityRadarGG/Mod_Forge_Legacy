@@ -18,15 +18,19 @@ import dev.architectury.pack200.java.Pack200Adapter
 plugins {
     id("java")
     alias(libs.plugins.ggEssentialLoom)
-    alias(libs.plugins.architecturyPack200)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.classTokenReplacer)
 }
 
-version = project.extra.get("mod_version") as String
-group = project.extra.get("maven_group") as String
+val modId = providers.gradleProperty("mod_id")
+val versionText = providers.gradleProperty("mod_version")
+val mavenGroup = providers.gradleProperty("maven_group")
+
+version = versionText.get()
+group = mavenGroup.get()
 
 base {
-    archivesName.set(project.extra.get("mod_id") as String)
+    archivesName.set(modId)
 }
 
 repositories {
@@ -42,7 +46,7 @@ dependencies {
 loom {
     forge {
         pack200Provider.set(Pack200Adapter())
-        // accessTransformer("src/main/resources/META-INF/${project.mod_id}_at.cfg")
+        // accessTransformer("src/main/resources/META-INF/${modId.get()}_at.cfg")
     }
 }
 
@@ -55,30 +59,26 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
     }
 
-    register<Copy>("includeLicenses") {
-        from(project.projectDir) {
-            include("LICENSE", "NOTICE")
-        }
-
-        into(sourceSets["main"].output.resourcesDir!!)
-    }
-
     withType<ProcessResources> {
-        dependsOn("includeLicenses")
-
         // https://github.com/gradle/gradle/issues/861
-        outputs.upToDateWhen { false }
-
-        filteringCharset = Charsets.UTF_8.name()
+        inputs.property("version", versionText.get())
+        inputs.property("mc_version", libs.versions.minecraft.get())
+        inputs.property("mod_id", modId.get())
 
         filesMatching("mcmod.info") {
             expand(
                 mapOf(
-                    "version" to project.version,
+                    "version" to versionText.get(),
                     "mc_version" to libs.versions.minecraft.get(),
-                    "mod_id" to project.extra.get("mod_id") as String
+                    "mod_id" to modId.get()
                 )
             )
+        }
+    }
+
+    jar {
+        from(layout.projectDirectory) {
+            include("LICENSE", "NOTICE")
         }
     }
 }
@@ -86,7 +86,16 @@ tasks {
 sourceSets {
     main {
         output.setResourcesDir(java.classesDirectory)
+
+        classTokenReplacer {
+            property("@VERSION@", versionText.get())
+            property("@MOD_ID@", modId.get())
+        }
     }
+}
+
+tasks.named("replaceTokens") {
+    dependsOn(tasks.named("processResources"))
 }
 
 spotless {
@@ -103,23 +112,4 @@ spotless {
         endWithNewline()
         trimTrailingWhitespace()
     }
-}
-
-// source replacement
-val sourceReplacementOutput = layout.buildDirectory.dir("generated/sources/sourceReplacement/java")
-val processJavaSourceReplacement = tasks.register<Copy>("processJavaSourceReplacement") {
-    from("src/main/java") {
-        include("**/*.java")
-        filter { line ->
-            line.replace("@MOD_ID@", project.extra.get("mod_id") as String)
-                .replace("@VERSION@", project.version.toString())
-        }
-    }
-    into(sourceReplacementOutput)
-}
-
-sourceSets.named("main") {
-    java.setSrcDirs(
-        listOf(processJavaSourceReplacement.map { sourceReplacementOutput.get().asFile })
-    )
 }
