@@ -8,8 +8,8 @@
         "url": "https://community-radar.de",
         "updateUrl": "",
         "authorList": [
-            "MrMystery",
-            "BlockyTheDev"
+            "BlockyTheDev",
+            "MrMystery"
         ],
         "credits": "CommunityRadar-Team, BlockyTheDev, MrMystery",
         "logoFile": "assets/${mod_id}/icon.png",
