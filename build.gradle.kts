@@ -89,7 +89,6 @@ sourceSets {
 
         classTokenReplacer {
             property("@VERSION@", versionText.get())
-            property("@MOD_ID@", modId.get())
         }
     }
 }

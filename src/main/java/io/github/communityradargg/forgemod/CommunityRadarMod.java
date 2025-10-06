@@ -39,7 +39,7 @@ import java.nio.file.Paths;
 @Mod(modid = CommunityRadarMod.MOD_ID, version = CommunityRadarMod.VERSION)
 public class CommunityRadarMod {
     /** The id of the mod. */
-    public static final String MOD_ID = "@MOD_ID@";
+    public static final String MOD_ID = "communityradar";
     /** The version of the mod. */
     public static final String VERSION = "@VERSION@";
     private static final Logger logger = LogManager.getLogger(CommunityRadarMod.class);
