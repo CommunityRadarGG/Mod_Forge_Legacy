@@ -19,7 +19,6 @@ plugins {
     id("java")
     alias(libs.plugins.ggEssentialLoom)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.classTokenReplacer)
 }
 
 val modId = providers.gradleProperty("mod_id")
@@ -86,15 +85,7 @@ tasks {
 sourceSets {
     main {
         output.setResourcesDir(java.classesDirectory)
-
-        classTokenReplacer {
-            property("@VERSION@", versionText.get())
-        }
     }
-}
-
-tasks.named("replaceTokens") {
-    dependsOn(tasks.named("processResources"))
 }
 
 spotless {

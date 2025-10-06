@@ -2,7 +2,6 @@
 # plugins
 ggEssentialLoom = "1.11.37"
 spotless = "7.2.1"
-classTokenReplacer = "1.1.7"
 
 # libraries
 minecraft = "1.8.9"
@@ -17,6 +16,5 @@ forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
 [plugins]
 ggEssentialLoom = { id = "gg.essential.loom", version.ref = "ggEssentialLoom" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-classTokenReplacer = { id = "net.raphimc.class-token-replacer", version.ref = "classTokenReplacer" }
 
 [bundles]

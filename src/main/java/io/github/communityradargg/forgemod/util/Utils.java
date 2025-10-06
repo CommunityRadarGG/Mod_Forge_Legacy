@@ -56,10 +56,11 @@ public class Utils {
     /**
      * Tries to get the uuid to the player name from the world.
      *
+     * @param mod The mod main class instance.
      * @param playerName The player name to get the corresponding uuid.
      * @return Returns a CompletableFuture with an optional with the player uuid.
      */
-    public static @NotNull CompletableFuture<Optional<UUID>> getUUID(final @NotNull String playerName) {
+    public static @NotNull CompletableFuture<Optional<UUID>> getUUID(final CommunityRadarMod mod, final @NotNull String playerName) {
         // user has to be in a world
         if (Minecraft.getMinecraft().theWorld == null) {
             return CompletableFuture.completedFuture(Optional.empty());
@@ -83,16 +84,17 @@ public class Utils {
         }
 
         // If no player with same name is in the world, try fetching the UUID from the Mojang-API.
-        return requestUuidForName(playerName);
+        return requestUuidForName(mod, playerName);
     }
 
     /**
      * Requests an uuid to a player name, from the Mojang API.
      *
+     * @param mod The mod main class instance.
      * @param playerName The player name to get the uuid for.
      * @return Returns a CompletableFuture with an optional with the requested uuid, it will be empty if an error occurred on requesting.
      */
-    private static @NotNull CompletableFuture<Optional<UUID>> requestUuidForName(final @NotNull String playerName) {
+    private static @NotNull CompletableFuture<Optional<UUID>> requestUuidForName(final CommunityRadarMod mod, final @NotNull String playerName) {
         final String urlText = MOJANG_API_NAME_TO_UUID + playerName;
         return CompletableFuture.supplyAsync(() -> {
             HttpURLConnection connection = null;
@@ -102,7 +104,7 @@ public class Utils {
                 connection.setConnectTimeout(3000);
                 connection.setReadTimeout(3000);
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", CommunityRadarMod.MOD_ID + "/" + CommunityRadarMod.VERSION);
+                connection.setRequestProperty("User-Agent", CommunityRadarMod.MOD_ID + "/" + mod.getVersion());
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     logger.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());
