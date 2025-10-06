@@ -13,23 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+rootProject.name = "communityradar-forge"
+
 pluginManagement {
     repositories {
-        mavenCentral()
         gradlePluginPortal()
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://jitpack.io/" }
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            switch (requested.id.id) {
-                case "net.minecraftforge.gradle.forge":
-                    useModule("com.github.ccbluex:ForgeGradle:${forgegradle_version}")
-                    break
-            }
+        maven {
+            name = "Fabric"
+            url = uri("https://maven.fabricmc.net")
+        }
+        maven {
+            name = "Forge"
+            url = uri("https://maven.minecraftforge.net")
+        }
+        maven {
+            name = "EssentialGG"
+            url = uri("https://repo.essential.gg/repository/maven-public")
+        }
+        maven {
+            name = "Architectury"
+            url = uri("https://maven.architectury.dev/")
         }
     }
 }
 
-rootProject.name = 'communityradar-forge'
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
+}

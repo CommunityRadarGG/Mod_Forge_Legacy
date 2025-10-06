@@ -1,0 +1,105 @@
+/*
+ * Copyright 2024 - present CommunityRadarGG <https://community-radar.de/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import dev.architectury.pack200.java.Pack200Adapter
+
+plugins {
+    id("java")
+    alias(libs.plugins.ggEssentialLoom)
+    alias(libs.plugins.spotless)
+}
+
+val modId = providers.gradleProperty("mod_id")
+val versionText = providers.gradleProperty("mod_version")
+val mavenGroup = providers.gradleProperty("maven_group")
+
+version = versionText.get()
+group = mavenGroup.get()
+
+base {
+    archivesName.set(modId)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft(libs.minecraft)
+    mappings(libs.mcpMappings)
+    forge(libs.forge)
+}
+
+loom {
+    forge {
+        pack200Provider.set(Pack200Adapter())
+        // accessTransformer("src/main/resources/META-INF/${modId.get()}_at.cfg")
+    }
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+}
+
+tasks {
+    withType<JavaCompile> {
+        options.encoding = Charsets.UTF_8.name()
+    }
+
+    withType<ProcessResources> {
+        // https://github.com/gradle/gradle/issues/861
+        inputs.property("version", versionText.get())
+        inputs.property("mc_version", libs.versions.minecraft.get())
+        inputs.property("mod_id", modId.get())
+
+        filesMatching("mcmod.info") {
+            expand(
+                mapOf(
+                    "version" to versionText.get(),
+                    "mc_version" to libs.versions.minecraft.get(),
+                    "mod_id" to modId.get()
+                )
+            )
+        }
+    }
+
+    jar {
+        from(layout.projectDirectory) {
+            include("LICENSE", "NOTICE")
+        }
+    }
+}
+
+sourceSets {
+    main {
+        output.setResourcesDir(java.classesDirectory)
+    }
+}
+
+spotless {
+    java {
+        licenseHeaderFile(rootProject.file("HEADER"))
+        endWithNewline()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        removeWildcardImports()
+    }
+
+    kotlin {
+        licenseHeaderFile(rootProject.file("HEADER"))
+        endWithNewline()
+        trimTrailingWhitespace()
+    }
+}

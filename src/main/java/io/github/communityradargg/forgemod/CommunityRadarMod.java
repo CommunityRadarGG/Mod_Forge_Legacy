@@ -23,8 +23,10 @@ import io.github.communityradargg.forgemod.event.PlayerNameFormatListener;
 import io.github.communityradargg.forgemod.radarlistmanager.RadarListManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,14 +38,12 @@ import java.nio.file.Paths;
 /**
  * This class represents the main class of the mod.
  */
-@Mod(modid = CommunityRadarMod.MODID, version = CommunityRadarMod.VERSION)
+@Mod(modid = CommunityRadarMod.MOD_ID)
 public class CommunityRadarMod {
-    /** The id of the mod. */
-    public static final String MODID = "communityradar";
-    /** The version of the mod. */
-    public static final String VERSION = "1.1.3-1.8.9-SNAPSHOT";
+    public static final String MOD_ID = "communityradar";
     private static final Logger logger = LogManager.getLogger(CommunityRadarMod.class);
     private static RadarListManager listManager;
+    private String version;
     private boolean onGrieferGames = false;
 
     /**
@@ -54,7 +54,11 @@ public class CommunityRadarMod {
     @EventHandler
     @SuppressWarnings("unused") // called by the mod loader
     public void init(final FMLInitializationEvent event) {
-        logger.info("Starting the mod '" + MODID + "' with the version '" + VERSION + "'!");
+        logger.info("Loading the mod '" + MOD_ID + "'!");
+
+        final ModContainer modContainer = Loader.instance().getIndexedModList().get(MOD_ID);
+        version = modContainer == null ? "UNKNOWN" : modContainer.getVersion();
+
         final File directoryPath = Paths.get(new File("")
                 .getAbsolutePath(),"communityradar", "lists")
                 .toFile();
@@ -68,7 +72,7 @@ public class CommunityRadarMod {
         listManager.loadPrivateLists();
         registerEvents();
         registerCommands();
-        logger.info("Successfully started the mod '" + MODID + "'!");
+        logger.info("Successfully loaded the mod '" + MOD_ID + "'!");
     }
 
     /**
@@ -85,7 +89,7 @@ public class CommunityRadarMod {
      * Registers the commands.
      */
     private void registerCommands() {
-        ClientCommandHandler.instance.registerCommand(new RadarCommand());
+        ClientCommandHandler.instance.registerCommand(new RadarCommand(this));
     }
 
     /**
@@ -127,5 +131,14 @@ public class CommunityRadarMod {
      */
     public void setOnGrieferGames(final boolean onGrieferGames) {
         this.onGrieferGames = onGrieferGames;
+    }
+
+    /**
+     * Gets the version.
+     *
+     * @return Returns the version.
+     */
+    public String getVersion() {
+        return version;
     }
 }

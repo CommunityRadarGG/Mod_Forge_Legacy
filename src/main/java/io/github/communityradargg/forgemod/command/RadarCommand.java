@@ -42,6 +42,17 @@ import java.util.UUID;
  * The class containing all logic for the radar command.
  */
 public class RadarCommand extends CommandBase {
+    private final CommunityRadarMod mod;
+
+    /**
+     * Constructs a {@link RadarCommand}.
+     *
+     * @param mod The mod main class instance.
+     */
+    public RadarCommand(final CommunityRadarMod mod) {
+        this.mod = mod;
+    }
+
     /** {@inheritDoc} */
     @Override
     public @NotNull String getCommandName() {
@@ -158,7 +169,7 @@ public class RadarCommand extends CommandBase {
 
         player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
                 .build().toChatComponentText());
-        Utils.getUUID(args[3]).thenAccept(uuidOptional -> {
+        Utils.getUUID(mod, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
                 player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
@@ -218,7 +229,7 @@ public class RadarCommand extends CommandBase {
         player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
                 .build().toChatComponentText());
         final RadarList list = listOptional.get();
-        Utils.getUUID(args[3]).thenAccept(uuidOptional -> {
+        Utils.getUUID(mod, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
                 player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
@@ -442,7 +453,7 @@ public class RadarCommand extends CommandBase {
     private void handleCheckPlayerSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
         player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
                 .build().toChatComponentText());
-        Utils.getUUID(args[1]).thenAccept(checkPlayerOptional -> {
+        Utils.getUUID(mod, args[1]).thenAccept(checkPlayerOptional -> {
             if (!checkPlayerOptional.isPresent()) {
                 // player uuid could not be fetched
                 player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)
@@ -517,7 +528,7 @@ public class RadarCommand extends CommandBase {
      */
     private void handleHelpSubcommand(final @NotNull EntityPlayer player) {
         player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.HELP)
-                .replace("{code_version}", CommunityRadarMod.VERSION)
+                .replace("{code_version}", mod.getVersion())
                 .excludePrefix()
                 .build().toChatComponentText());
     }

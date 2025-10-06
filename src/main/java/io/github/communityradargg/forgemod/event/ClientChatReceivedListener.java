@@ -33,15 +33,15 @@ public class ClientChatReceivedListener {
      * A pattern matching private messages (in and out) and payments (in and out) as well as global and plot chat messages with the player name (nicked, bedrock and java) as only group.
      */
     private static final Pattern pattern = Pattern.compile("[A-Za-z\\-+]+\\s\\u2503\\s(~?!?\\w{1,16})");
-    private final CommunityRadarMod communityRadarMod;
+    private final CommunityRadarMod mod;
 
     /**
      * Constructs the class {@link ClientChatReceivedListener}.
      *
-     * @param communityRadarMod An instance of the {@link CommunityRadarMod} class.
+     * @param mod The mod main class instance.
      */
-    public ClientChatReceivedListener(final @NotNull CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
+    public ClientChatReceivedListener(final @NotNull CommunityRadarMod mod) {
+        this.mod = mod;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ClientChatReceivedListener {
     @SubscribeEvent
     @SuppressWarnings("unused") // event listener
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
-        if (!communityRadarMod.isOnGrieferGames()) {
+        if (!mod.isOnGrieferGames()) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class ClientChatReceivedListener {
             return;
         }
 
-        Utils.getUUID(playerName).thenAccept(uuid -> {
+        Utils.getUUID(mod, playerName).thenAccept(uuid -> {
             if (uuid.isPresent() && CommunityRadarMod.getListManager().isInList(uuid.get())) {
                 event.message = new ChatComponentText(CommunityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
                         .appendText(" §r")
