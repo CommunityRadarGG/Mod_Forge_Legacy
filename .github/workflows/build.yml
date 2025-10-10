@@ -26,7 +26,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Clean Build
+      - name: Build
         run: ./gradlew build
       - name: Extract Version from Gradle
         run: |
