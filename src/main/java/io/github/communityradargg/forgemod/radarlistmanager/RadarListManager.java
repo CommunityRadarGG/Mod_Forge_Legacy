@@ -49,8 +49,8 @@ import java.util.stream.Stream;
  * A class containing the methods to manage lists.
  */
 public class RadarListManager {
-    private static final Logger logger = LogManager.getLogger(RadarListManager.class);
-    private static final Gson gson = new GsonBuilder()
+    private static final Logger LOGGER = LogManager.getLogger(RadarListManager.class);
+    private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter())
             .registerTypeAdapter(Map.class, new GsonRadarListPlayerMapAdapter())
@@ -169,9 +169,9 @@ public class RadarListManager {
         }
 
         try (final FileWriter writer = new FileWriter(directoryPath + list.getNamespace() + ".json")) {
-            writer.write(gson.toJson(list));
+            writer.write(GSON.toJson(list));
         } catch (final IOException e) {
-            logger.error("Could not save list", e);
+            LOGGER.error("Could not save list", e);
         }
     }
 
@@ -273,13 +273,13 @@ public class RadarListManager {
      */
     private @NotNull Optional<RadarList> loadRadarListFromFile(final @NotNull String filePath) {
         try (final FileReader reader = new FileReader(filePath)) {
-            final RadarList list = gson.fromJson(reader, new TypeToken<RadarList>() {}.getType());
+            final RadarList list = GSON.fromJson(reader, new TypeToken<RadarList>() {}.getType());
             list.setUrl(filePath);
             if (list.validateList()) {
                 return Optional.of(list);
             }
         } catch (final IOException | IllegalStateException | JsonIOException | JsonSyntaxException e) {
-            logger.error("Could not load list from file", e);
+            LOGGER.error("Could not load list from file", e);
         }
         return Optional.empty();
     }
@@ -298,7 +298,7 @@ public class RadarListManager {
                     .filter(string -> string.endsWith(".json"))
                     .collect(Collectors.toSet());
         } catch (final IOException e) {
-            logger.error("Could not get json urls", e);
+            LOGGER.error("Could not get json urls", e);
         }
         return new HashSet<>();
     }
@@ -309,7 +309,7 @@ public class RadarListManager {
      * @return Returns the pre-configured {@link Gson} instance.
      */
     public static @NotNull Gson getGson() {
-        return gson;
+        return GSON;
     }
 
     /**

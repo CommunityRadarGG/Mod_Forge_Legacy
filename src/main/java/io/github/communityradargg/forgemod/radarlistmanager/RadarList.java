@@ -38,7 +38,7 @@ import java.util.UUID;
  * A class representing a radar list.
  */
 public class RadarList {
-    private static final Logger logger = LogManager.getLogger(RadarList.class);
+    private static final Logger LOGGER = LogManager.getLogger(RadarList.class);
     @SerializedName("VERSION")
     @SuppressWarnings("unused") // needed in future
     private final int version = 1;
@@ -191,7 +191,7 @@ public class RadarList {
                     .fromJson(reader, new TypeToken<List<RadarListEntry>>() {}.getType());
             players.forEach(this::loadRadarListEntry);
         } catch (final IOException | JsonIOException | JsonSyntaxException e) {
-            logger.error("Could not load public list", e);
+            LOGGER.error("Could not load public list", e);
         }
     }
 
