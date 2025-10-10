@@ -32,16 +32,16 @@ public class ClientChatReceivedListener {
     /**
      * A pattern matching private messages (in and out) and payments (in and out) as well as global and plot chat messages with the player name (nicked, bedrock and java) as only group.
      */
-    private static final Pattern pattern = Pattern.compile("[A-Za-z\\-+]+\\s\\u2503\\s(~?!?\\w{1,16})");
-    private final CommunityRadarMod mod;
+    private static final Pattern PATTERN = Pattern.compile("[A-Za-z\\-+]+\\s\\u2503\\s(~?!?\\w{1,16})");
+    private final CommunityRadarMod communityRadarMod;
 
     /**
      * Constructs the class {@link ClientChatReceivedListener}.
      *
-     * @param mod The mod main class instance.
+     * @param communityRadarMod The mod main class instance.
      */
-    public ClientChatReceivedListener(final @NotNull CommunityRadarMod mod) {
-        this.mod = mod;
+    public ClientChatReceivedListener(final @NotNull CommunityRadarMod communityRadarMod) {
+        this.communityRadarMod = communityRadarMod;
     }
 
     /**
@@ -50,13 +50,12 @@ public class ClientChatReceivedListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // event listener
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
-        if (!mod.isOnGrieferGames()) {
+        if (!communityRadarMod.isOnGrieferGames()) {
             return;
         }
 
-        final Matcher matcher = pattern.matcher(event.message.getUnformattedText());
+        final Matcher matcher = PATTERN.matcher(event.message.getUnformattedText());
         if (!matcher.find()) {
             return;
         }
@@ -67,9 +66,9 @@ public class ClientChatReceivedListener {
             return;
         }
 
-        Utils.getUUID(mod, playerName).thenAccept(uuid -> {
-            if (uuid.isPresent() && CommunityRadarMod.getListManager().isInList(uuid.get())) {
-                event.message = new ChatComponentText(CommunityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
+        Utils.getUUID(communityRadarMod, playerName).thenAccept(uuid -> {
+            if (uuid.isPresent() && communityRadarMod.getListManager().isInList(uuid.get())) {
+                event.message = new ChatComponentText(communityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
                         .appendText(" §r")
                         .appendText(event.message.getFormattedText());
             }

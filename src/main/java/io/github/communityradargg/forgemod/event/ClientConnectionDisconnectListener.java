@@ -45,7 +45,6 @@ public class ClientConnectionDisconnectListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // called by forge
     public void onFMLNetworkClientConnectedToServer(final FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
             return;
@@ -70,7 +69,6 @@ public class ClientConnectionDisconnectListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // called by forge
     public void onFMLNetworkClientDisconnectionFromServer(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         communityRadarMod.setOnGrieferGames(false);
     }

@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * A class with some util methods.
  */
 public class Utils {
-    private static final Logger logger = LogManager.getLogger(Utils.class);
+    private static final Logger LOGGER = LogManager.getLogger(Utils.class);
     private static final String MOJANG_API_NAME_TO_UUID = "https://api.mojang.com/users/profiles/minecraft/";
     private static final Pattern UUID_MOJANG_API_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
     private static final DateTimeFormatter readableDateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -107,7 +107,7 @@ public class Utils {
                 connection.setRequestProperty("User-Agent", CommunityRadarMod.MOD_ID + "/" + mod.getVersion());
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    logger.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());
+                    LOGGER.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());
                     return Optional.empty();
                 }
 
@@ -127,7 +127,7 @@ public class Utils {
                 if (connection != null) {
                     connection.disconnect();
                 }
-                logger.error("Trying to request data from '{}' resulted in an exception", urlText, e);
+                LOGGER.error("Trying to request data from '{}' resulted in an exception", urlText, e);
                 return Optional.empty();
             }
         });
@@ -197,22 +197,24 @@ public class Utils {
     /**
      * Updates a player display name and name tag by its uuid.
      *
+     * @param communityRadarMod The mod main class instance.
      * @param uuid The uuid to update the corresponding player.
      */
-    public static void updatePlayerByUuid(final @NotNull UUID uuid, final @NotNull Set<String> oldPrefixes) {
-        getEntityPlayerByUuid(uuid).ifPresent(player -> updatePlayerNameTag(player, oldPrefixes));
-        getNetworkPlayerInfoByUuid(uuid).ifPresent(networkPlayerInfo -> updatePlayerPrefix(networkPlayerInfo, oldPrefixes));
+    public static void updatePlayerByUuid(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull UUID uuid, final @NotNull Set<String> oldPrefixes) {
+        getEntityPlayerByUuid(uuid).ifPresent(player -> updatePlayerNameTag(communityRadarMod, player, oldPrefixes));
+        getNetworkPlayerInfoByUuid(uuid).ifPresent(networkPlayerInfo -> updatePlayerPrefix(communityRadarMod, networkPlayerInfo, oldPrefixes));
     }
 
     /**
      * Handles updating the name tag of a player entity.
      *
+     * @param communityRadarMod The mod main class instance.
      * @param player The player entity to update the name tag.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    public static void updatePlayerNameTag(final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
+    public static void updatePlayerNameTag(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
         player.getPrefixes().removeIf(prefix -> oldPrefixes.stream().anyMatch(oldPrefix -> new ChatComponentText(oldPrefix.replace("&", "§") + " ").getUnformattedText().equals(prefix.getUnformattedText())));
-        final String addonPrefix = CommunityRadarMod.getListManager()
+        final String addonPrefix = communityRadarMod.getListManager()
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
 
@@ -224,20 +226,22 @@ public class Utils {
     /**
      * Handles updating the player prefixes in the display name.
      *
+     * @param communityRadarMod The mod main class instance.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    public static void updatePrefixes(final @NotNull Set<String> oldPrefixes) {
+    public static void updatePrefixes(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull Set<String> oldPrefixes) {
         Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap()
-                .forEach(player -> updatePlayerPrefix(player, oldPrefixes));
+                .forEach(player -> updatePlayerPrefix(communityRadarMod, player, oldPrefixes));
     }
 
     /**
      * Handles updating the player prefix in the display name of a single player.
      *
+     * @param communityRadarMod The mod main class instance.
      * @param player The player to update.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    private static void updatePlayerPrefix(final @NotNull NetworkPlayerInfo player, final @NotNull Set<String> oldPrefixes) {
+    private static void updatePlayerPrefix(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull NetworkPlayerInfo player, final @NotNull Set<String> oldPrefixes) {
         if (player.getGameProfile() == null || player.getGameProfile().getId() == null || player.getDisplayName() == null) {
             return;
         }
@@ -251,7 +255,7 @@ public class Utils {
             newDisplayName = displayName.getSiblings().get(displayName.getSiblings().size() - 1);
         }
 
-        final String addonPrefix = CommunityRadarMod.getListManager()
+        final String addonPrefix = communityRadarMod.getListManager()
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
         if (!addonPrefix.isEmpty()) {

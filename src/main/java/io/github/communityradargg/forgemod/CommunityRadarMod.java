@@ -41,8 +41,8 @@ import java.nio.file.Paths;
 @Mod(modid = CommunityRadarMod.MOD_ID)
 public class CommunityRadarMod {
     public static final String MOD_ID = "communityradar";
-    private static final Logger logger = LogManager.getLogger(CommunityRadarMod.class);
-    private static RadarListManager listManager;
+    private static final Logger LOGGER = LogManager.getLogger(CommunityRadarMod.class);
+    private RadarListManager listManager;
     private String version;
     private boolean onGrieferGames = false;
 
@@ -52,9 +52,8 @@ public class CommunityRadarMod {
      * @param event The event.
      */
     @EventHandler
-    @SuppressWarnings("unused") // called by the mod loader
     public void init(final FMLInitializationEvent event) {
-        logger.info("Loading the mod '" + MOD_ID + "'!");
+        LOGGER.info("Loading the mod '{}'", MOD_ID);
 
         final ModContainer modContainer = Loader.instance().getIndexedModList().get(MOD_ID);
         version = modContainer == null ? "UNKNOWN" : modContainer.getVersion();
@@ -63,16 +62,16 @@ public class CommunityRadarMod {
                 .getAbsolutePath(),"communityradar", "lists")
                 .toFile();
         if (!directoryPath.exists() && !directoryPath.mkdirs()) {
-            logger.error("Could not create directory: {}", directoryPath);
+            LOGGER.error("Could not create directory: {}", directoryPath);
         }
 
-        listManager = new RadarListManager(directoryPath.getAbsolutePath() + "/");
+        listManager = new RadarListManager(this, directoryPath.getAbsolutePath() + "/");
         registerPublicLists();
         // Needs to be after loading public lists
         listManager.loadPrivateLists();
         registerEvents();
         registerCommands();
-        logger.info("Successfully loaded the mod '" + MOD_ID + "'!");
+        LOGGER.info("Successfully loaded the mod '{}'", MOD_ID);
     }
 
     /**
@@ -97,11 +96,11 @@ public class CommunityRadarMod {
      */
     private void registerPublicLists() {
         if (!listManager.registerPublicList("scammer", "&7[&cScammer&7]", "https://lists.community-radar.de/versions/v1/scammer.json")) {
-            logger.error("Could not register public list 'scammers'!");
+            LOGGER.error("Could not register public list 'scammers'!");
         }
 
         if (!listManager.registerPublicList("trusted", "&7[&aTrusted&7]", "https://lists.community-radar.de/versions/v1/trusted.json")) {
-            logger.error("Could not register public list 'verbvllert_trusted'!");
+            LOGGER.error("Could not register public list 'verbvllert_trusted'!");
         }
     }
 
@@ -110,7 +109,7 @@ public class CommunityRadarMod {
      *
      * @return Returns the radar list manager instance.
      */
-    public static @NotNull RadarListManager getListManager() {
+    public @NotNull RadarListManager getListManager() {
         return listManager;
     }
 

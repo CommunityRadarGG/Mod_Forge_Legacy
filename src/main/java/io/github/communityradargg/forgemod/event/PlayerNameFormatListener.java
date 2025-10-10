@@ -42,11 +42,10 @@ public class PlayerNameFormatListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // called by forge event system
     public void onPlayerNameFormat(final PlayerEvent.NameFormat event) {
         if (!communityRadarMod.isOnGrieferGames()) {
             return;
         }
-        Utils.updatePlayerNameTag(event.entityPlayer, CommunityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePlayerNameTag(communityRadarMod, event.entityPlayer, communityRadarMod.getListManager().getExistingPrefixes());
     }
 }

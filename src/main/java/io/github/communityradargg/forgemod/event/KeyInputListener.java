@@ -43,7 +43,6 @@ public class KeyInputListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // called by mod loader on event
     public void onKeyInput(final InputEvent.KeyInputEvent event) {
         if (!communityRadarMod.isOnGrieferGames()) {
             return;
@@ -54,6 +53,6 @@ public class KeyInputListener {
             return;
         }
 
-        Utils.updatePrefixes(CommunityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePrefixes(communityRadarMod, communityRadarMod.getListManager().getExistingPrefixes());
     }
 }
