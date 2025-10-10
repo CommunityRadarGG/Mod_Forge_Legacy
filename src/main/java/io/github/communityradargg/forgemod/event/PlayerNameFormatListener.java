@@ -46,6 +46,6 @@ public class PlayerNameFormatListener {
         if (!communityRadarMod.isOnGrieferGames()) {
             return;
         }
-        Utils.updatePlayerNameTag(event.entityPlayer, CommunityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePlayerNameTag(communityRadarMod, event.entityPlayer, communityRadarMod.getListManager().getExistingPrefixes());
     }
 }

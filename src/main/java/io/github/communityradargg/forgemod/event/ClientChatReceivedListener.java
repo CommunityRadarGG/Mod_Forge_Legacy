@@ -38,10 +38,10 @@ public class ClientChatReceivedListener {
     /**
      * Constructs the class {@link ClientChatReceivedListener}.
      *
-     * @param mod The mod main class instance.
+     * @param communityRadarMod The mod main class instance.
      */
-    public ClientChatReceivedListener(final @NotNull CommunityRadarMod mod) {
-        this.mod = mod;
+    public ClientChatReceivedListener(final @NotNull CommunityRadarMod communityRadarMod) {
+        this.communityRadarMod = communityRadarMod;
     }
 
     /**
@@ -51,7 +51,7 @@ public class ClientChatReceivedListener {
      */
     @SubscribeEvent
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
-        if (!mod.isOnGrieferGames()) {
+        if (!communityRadarMod.isOnGrieferGames()) {
             return;
         }
 
@@ -66,9 +66,9 @@ public class ClientChatReceivedListener {
             return;
         }
 
-        Utils.getUUID(mod, playerName).thenAccept(uuid -> {
-            if (uuid.isPresent() && CommunityRadarMod.getListManager().isInList(uuid.get())) {
-                event.message = new ChatComponentText(CommunityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
+        Utils.getUUID(communityRadarMod, playerName).thenAccept(uuid -> {
+            if (uuid.isPresent() && communityRadarMod.getListManager().isInList(uuid.get())) {
+                event.message = new ChatComponentText(communityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
                         .appendText(" §r")
                         .appendText(event.message.getFormattedText());
             }

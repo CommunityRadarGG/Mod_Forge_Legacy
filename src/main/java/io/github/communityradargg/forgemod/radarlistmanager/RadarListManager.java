@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import io.github.communityradargg.forgemod.CommunityRadarMod;
 import io.github.communityradargg.forgemod.radarlistmanager.adapters.GsonLocalDateTimeAdapter;
 import io.github.communityradargg.forgemod.radarlistmanager.adapters.GsonRadarListPlayerMapAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -55,16 +56,19 @@ public class RadarListManager {
             .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter())
             .registerTypeAdapter(Map.class, new GsonRadarListPlayerMapAdapter())
             .create();
+    private final CommunityRadarMod communityRadarMod;
     private final List<RadarList> lists;
     private final String directoryPath;
 
     /**
      * Constructs a {@link RadarListManager}
      *
+     * @param communityRadarMod The mod main class instance.
      * @param directoryPath The directory path of the list the manager manages.
      */
-    public RadarListManager(final @NotNull String directoryPath) {
+    public RadarListManager(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String directoryPath) {
         this.lists = new ArrayList<>();
+        this.communityRadarMod = communityRadarMod;
         this.directoryPath = directoryPath;
     }
 
@@ -189,7 +193,7 @@ public class RadarListManager {
             return false;
         }
 
-        lists.add(new RadarList(namespace, prefix, directoryPath + namespace + ".json", RadarListVisibility.PRIVATE));
+        lists.add(new RadarList(communityRadarMod, namespace, prefix, directoryPath + namespace + ".json", RadarListVisibility.PRIVATE));
 
         final Optional<RadarList> listOptional = getRadarList(namespace);
         if (!listOptional.isPresent()) {
@@ -215,7 +219,7 @@ public class RadarListManager {
             return false;
         }
 
-        lists.add(new RadarList(namespace, prefix, url, RadarListVisibility.PUBLIC));
+        lists.add(new RadarList(communityRadarMod, namespace, prefix, url, RadarListVisibility.PUBLIC));
         return true;
     }
 

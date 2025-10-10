@@ -65,7 +65,7 @@ public class CommunityRadarMod {
             LOGGER.error("Could not create directory: {}", directoryPath);
         }
 
-        listManager = new RadarListManager(directoryPath.getAbsolutePath() + "/");
+        listManager = new RadarListManager(this, directoryPath.getAbsolutePath() + "/");
         registerPublicLists();
         // Needs to be after loading public lists
         listManager.loadPrivateLists();

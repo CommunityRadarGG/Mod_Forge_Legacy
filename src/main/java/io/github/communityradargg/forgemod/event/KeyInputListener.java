@@ -53,6 +53,6 @@ public class KeyInputListener {
             return;
         }
 
-        Utils.updatePrefixes(CommunityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePrefixes(communityRadarMod, communityRadarMod.getListManager().getExistingPrefixes());
     }
 }

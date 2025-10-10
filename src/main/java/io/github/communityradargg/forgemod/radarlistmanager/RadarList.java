@@ -39,6 +39,7 @@ import java.util.UUID;
  */
 public class RadarList {
     private static final Logger LOGGER = LogManager.getLogger(RadarList.class);
+    private transient final CommunityRadarMod communityRadarMod;
     @SerializedName("VERSION")
     @SuppressWarnings("unused") // needed in future
     private final int version = 1;
@@ -55,12 +56,14 @@ public class RadarList {
     /**
      * Constructs a {@link RadarList}.
      *
+     * @param communityRadarMod The mod main class instance.
      * @param namespace The namespace for the list.
      * @param prefix The prefix for the list.
      * @param url The url for the list.
      * @param visibility The visibility of the list.
      */
-    public RadarList(final @NotNull String namespace, final @NotNull String prefix, final @NotNull String url, final @NotNull RadarListVisibility visibility) {
+    public RadarList(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String namespace, final @NotNull String prefix, final @NotNull String url, final @NotNull RadarListVisibility visibility) {
+        this.communityRadarMod = communityRadarMod;
         this.namespace = namespace;
         this.prefix = prefix;
         this.visibility = visibility;
@@ -178,7 +181,7 @@ public class RadarList {
      */
     public void saveList() {
         if (visibility == RadarListVisibility.PRIVATE) {
-            CommunityRadarMod.getListManager().saveRadarList(this);
+            communityRadarMod.getListManager().saveRadarList(this);
         }
     }
 
