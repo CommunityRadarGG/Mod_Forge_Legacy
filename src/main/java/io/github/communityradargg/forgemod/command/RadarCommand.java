@@ -39,7 +39,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * The class containing all logic for the radar command.
+ * The class containing all logic for the main radar command.
  */
 public class RadarCommand extends CommandBase {
     private final CommunityRadarMod mod;
@@ -53,37 +53,31 @@ public class RadarCommand extends CommandBase {
         this.mod = mod;
     }
 
-    /** {@inheritDoc} */
     @Override
     public @NotNull String getCommandName() {
         return "radar";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getCommandUsage(final @NotNull ICommandSender sender) {
         return "/radar";
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getCommandAliases() {
         return Arrays.asList("communityradar", "scammer", "trustedmm", "mm");
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean canCommandSenderUseCommand(final ICommandSender sender) {
         return sender instanceof EntityPlayer;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void processCommand(final ICommandSender sender, final String[] args) {
         if (!(sender instanceof EntityPlayer)) {

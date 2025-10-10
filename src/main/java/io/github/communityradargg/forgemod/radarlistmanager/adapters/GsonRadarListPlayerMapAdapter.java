@@ -33,7 +33,6 @@ import java.util.UUID;
  * A class with an adapter for serialization and deserialization of following structure {@code Map<UUID, RadarListEntry>} for the GSON library.
  */
 public class GsonRadarListPlayerMapAdapter implements JsonSerializer<Map<UUID, RadarListEntry>>, JsonDeserializer<Map<UUID, RadarListEntry>> {
-    /** {@inheritDoc} */
     @Override
     public Map<UUID, RadarListEntry> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
         final JsonArray playerMapJsonArray = json.getAsJsonArray();
@@ -46,7 +45,6 @@ public class GsonRadarListPlayerMapAdapter implements JsonSerializer<Map<UUID, R
         return playerMap;
     }
 
-    /** {@inheritDoc} */
     @Override
     public JsonElement serialize(final Map<UUID, RadarListEntry> playerMap, final Type typeOfSrc, final JsonSerializationContext context) {
         return context.serialize(playerMap.values());

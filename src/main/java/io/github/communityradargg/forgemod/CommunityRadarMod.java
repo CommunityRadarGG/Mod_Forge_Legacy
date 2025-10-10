@@ -41,8 +41,8 @@ import java.nio.file.Paths;
 @Mod(modid = CommunityRadarMod.MOD_ID)
 public class CommunityRadarMod {
     public static final String MOD_ID = "communityradar";
-    private static RadarListManager listManager;
     private static final Logger LOGGER = LogManager.getLogger(CommunityRadarMod.class);
+    private RadarListManager listManager;
     private String version;
     private boolean onGrieferGames = false;
 
