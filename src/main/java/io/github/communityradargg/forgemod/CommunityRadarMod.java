@@ -109,7 +109,7 @@ public class CommunityRadarMod {
      *
      * @return Returns the radar list manager instance.
      */
-    public static @NotNull RadarListManager getListManager() {
+    public @NotNull RadarListManager getListManager() {
         return listManager;
     }
 
