@@ -52,7 +52,6 @@ public class CommunityRadarMod {
      * @param event The event.
      */
     @EventHandler
-    @SuppressWarnings("unused") // called by the mod loader
     public void init(final FMLInitializationEvent event) {
         LOGGER.info("Loading the mod '{}'", MOD_ID);
 

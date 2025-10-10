@@ -50,7 +50,6 @@ public class ClientChatReceivedListener {
      * @param event The event.
      */
     @SubscribeEvent
-    @SuppressWarnings("unused") // event listener
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
         if (!mod.isOnGrieferGames()) {
             return;
