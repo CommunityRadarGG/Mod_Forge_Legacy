@@ -4,6 +4,10 @@ ggEssentialLoom = "1.11.37"
 spotless = "7.2.1"
 
 # libraries
+# general libs
+jetbrainsJavaAnnotations = "26.0.2-1"
+gson = "2.2.4" # needs to stay on 1.8.9 version
+
 # 1.8.9 (Forge)
 minecraft189 = "1.8.9"
 mcpMappings189 = "22-1.8.9"
@@ -15,6 +19,10 @@ mcpMappings1122 = "39-1.12"
 forge1122 = "1.12.2-14.23.5.2847"
 
 [libraries]
+# general libraries
+jetbrainsJavaAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsJavaAnnotations" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
 # 1.8.9 (Forge)
 minecraft189 = { group = "com.mojang", name = "minecraft", version.ref = "minecraft189" }
 mcpMappings189 = { group = "de.oceanlabs.mcp", name = "mcp_stable", version.ref = "mcpMappings189" }

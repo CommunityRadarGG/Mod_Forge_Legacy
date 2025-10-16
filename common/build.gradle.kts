@@ -1,7 +1,11 @@
+import org.gradle.kotlin.dsl.libs
+
 base {
     archivesName.set("common")
 }
 
+@Suppress("VulnerableLibrariesLocal") // some libs need to stay at the game versions
 dependencies {
-    // empty
+    compileOnly(rootProject.libs.jetbrainsJavaAnnotations)
+    compileOnly(rootProject.libs.gson)
 }
