@@ -40,3 +40,12 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
 }
+
+
+
+include("common")
+
+listOf("1.8.9", "1.12.2").forEach { version ->
+    include("versions:$version")
+    project(":versions:$version").projectDir = file("versions/$version")
+}

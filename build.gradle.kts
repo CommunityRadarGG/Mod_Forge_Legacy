@@ -13,78 +13,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import dev.architectury.pack200.java.Pack200Adapter
-
 plugins {
     id("java")
-    alias(libs.plugins.ggEssentialLoom)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.ggEssentialLoom) apply false
 }
 
-val modId = providers.gradleProperty("mod_id")
-val versionText = providers.gradleProperty("mod_version")
-val mavenGroup = providers.gradleProperty("maven_group")
+val groupTextProvider = providers.gradleProperty("maven_group")
+val versionTextProvider = providers.gradleProperty("mod_version")
+val modIdProvider = providers.gradleProperty("mod_id")
 
-version = versionText.get()
-group = mavenGroup.get()
+allprojects {
+    group = groupTextProvider.get()
+    version = versionTextProvider.get()
 
-base {
-    archivesName.set(modId)
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    minecraft(libs.minecraft)
-    mappings(libs.mcpMappings)
-    forge(libs.forge)
-}
-
-loom {
-    forge {
-        pack200Provider.set(Pack200Adapter())
-        // accessTransformer("src/main/resources/META-INF/${modId.get()}_at.cfg")
+    repositories {
+        mavenCentral()
     }
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-}
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
 
-tasks {
-    withType<JavaCompile> {
-        options.encoding = Charsets.UTF_8.name()
+    val computedVersion = if (path.startsWith(":versions:")) {
+        "${versionTextProvider.get()}+$name"
+    } else {
+        versionTextProvider.get()
     }
 
-    withType<ProcessResources> {
-        // https://github.com/gradle/gradle/issues/861
-        inputs.property("version", versionText.get())
-        inputs.property("mc_version", libs.versions.minecraft.get())
-        inputs.property("mod_id", modId.get())
+    version = computedVersion
 
-        filesMatching("mcmod.info") {
-            expand(
-                mapOf(
-                    "version" to versionText.get(),
-                    "mc_version" to libs.versions.minecraft.get(),
-                    "mod_id" to modId.get()
+    extra["versionText"] = computedVersion
+    extra["modIdText"] = modIdProvider.get()
+
+    base {
+        archivesName.set(modIdProvider.get())
+    }
+
+    project(":versions").childProjects.values.forEach { versionProject ->
+        versionProject.apply(plugin = rootProject.libs.plugins.ggEssentialLoom.get().pluginId)
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(8))
+        }
+    }
+
+    tasks {
+        withType<JavaCompile> {
+            options.encoding = Charsets.UTF_8.name()
+        }
+
+        withType<Jar> {
+            from(rootProject.layout.projectDirectory) {
+                include("LICENSE", "NOTICE")
+            }
+
+            manifest {
+                attributes(
+                    "Specification-Title" to rootProject.name,
+                    "Specification-Version" to versionTextProvider.get(),
+                    "Implementation-Title" to rootProject.name,
+                    "Implementation-Version" to versionTextProvider.get()
                 )
-            )
-        }
-    }
+            }
 
-    jar {
-        from(layout.projectDirectory) {
-            include("LICENSE", "NOTICE")
+            matching { it.name == "remapJar" }.configureEach {
+                doLast {
+                    val jar = outputs.files.singleFile
+                    val targetDir = rootProject.layout.buildDirectory.dir("libs").get().asFile
+                    targetDir.mkdirs()
+                    jar.copyTo(targetDir.resolve(jar.name), overwrite = true)
+                }
+            }
         }
-    }
-}
-
-sourceSets {
-    main {
-        output.setResourcesDir(java.classesDirectory)
     }
 }
 
@@ -101,5 +105,11 @@ spotless {
         licenseHeaderFile(rootProject.file("HEADER"))
         endWithNewline()
         trimTrailingWhitespace()
+    }
+}
+
+tasks {
+    named<Jar>("jar").configure {
+        enabled = false
     }
 }

@@ -1,0 +1,19 @@
+[
+    {
+        "modid": "${mod_id}",
+        "name": "CommunityRadar Mod - Official - 1.12.2",
+        "description": "The Official CommunityRadar Forge 1.12.2 Mod.",
+        "version": "${version}",
+        "mcversion": "${mc_version}",
+        "url": "https://community-radar.de",
+        "updateUrl": "",
+        "authorList": [
+            "BlockyTheDev",
+            "MrMystery"
+        ],
+        "credits": "CommunityRadar-Team, BlockyTheDev, MrMystery",
+        "logoFile": "assets/${mod_id}/icon.png",
+        "screenshots": [],
+        "dependencies": []
+    }
+]
