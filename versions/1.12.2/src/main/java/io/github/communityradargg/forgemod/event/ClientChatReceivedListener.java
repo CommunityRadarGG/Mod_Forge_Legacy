@@ -16,6 +16,7 @@
 package io.github.communityradargg.forgemod.event;
 
 import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.util.GeneralUtils;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -51,7 +52,7 @@ public class ClientChatReceivedListener {
      */
     @SubscribeEvent
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
-        if (!communityRadarMod.isOnGrieferGames()) {
+        if (!GeneralUtils.isOnGrieferGames()) {
             return;
         }
 

@@ -33,10 +33,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +48,6 @@ public class Utils {
     private static final Logger LOGGER = LogManager.getLogger(Utils.class);
     private static final String MOJANG_API_NAME_TO_UUID = "https://api.mojang.com/users/profiles/minecraft/";
     private static final Pattern UUID_MOJANG_API_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
-    private static final DateTimeFormatter readableDateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private static final Map<String, UUID> uuidNameCache = new HashMap<>();
 
     /**
@@ -137,38 +133,6 @@ public class Utils {
                 return Optional.empty();
             }
         });
-    }
-
-    /**
-     * Formats a given date time in a human-readable form.
-     *
-     * @param localDateTime The local date time to format.
-     * @return Returns the formatted date time.
-     */
-    public static @NotNull String formatDateTime(final @NotNull LocalDateTime localDateTime) {
-        return localDateTime.format(readableDateTimeFormatter);
-    }
-
-    /**
-     * Checks if a given hostname is a hostname of GrieferGames.
-     * <br><br>
-     * Following domains are taken into account:
-     * <br>
-     * - griefergames.net
-     * <br>
-     * - griefergames.de
-     * <br>
-     * - griefergames.live
-     *
-     * @param hostName The hostname to check.
-     * @return Returns, whether the given hostname is one of the GrieferGames hostnames.
-     */
-    public static boolean isGrieferGamesHostName(final @NotNull String hostName) {
-        final String filteredHostName = Optional.of(hostName)
-                .filter(host -> host.endsWith("."))
-                .map(host -> host.substring(0, host.length() - 1).toLowerCase(Locale.ENGLISH))
-                .orElse(hostName.toLowerCase(Locale.ENGLISH));
-        return filteredHostName.endsWith("griefergames.net") || filteredHostName.endsWith("griefergames.de") || filteredHostName.endsWith("griefergames.live");
     }
 
     /**

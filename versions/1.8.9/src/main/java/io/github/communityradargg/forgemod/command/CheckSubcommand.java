@@ -17,6 +17,7 @@ package io.github.communityradargg.forgemod.command;
 
 import io.github.communityradargg.forgemod.CommunityRadarMod;
 import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
+import io.github.communityradargg.forgemod.util.GeneralUtils;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import io.github.communityradargg.forgemod.util.Utils;
@@ -94,8 +95,8 @@ public class CheckSubcommand implements Subcommand {
                     .replaceWithColorCodes("{prefix}", communityRadarMod.getListManager().getPrefix(entry.uuid()))
                     .replace("{name}", entry.name())
                     .replace("{cause}", entry.cause())
-                    .replace("{entryCreationDate}", Utils.formatDateTime(entry.entryCreationDate()))
-                    .replace("{entryUpdateDate}", Utils.formatDateTime(entry.entryUpdateDate()))
+                    .replace("{entryCreationDate}", GeneralUtils.formatDateTime(entry.entryCreationDate()))
+                    .replace("{entryUpdateDate}", GeneralUtils.formatDateTime(entry.entryUpdateDate()))
                     .build().toChatComponentText());
         });
     }
@@ -130,8 +131,8 @@ public class CheckSubcommand implements Subcommand {
                     .replaceWithColorCodes("{prefix}", communityRadarMod.getListManager().getPrefix(entry.uuid()))
                     .replace("{name}", entry.name())
                     .replace("{cause}", entry.cause())
-                    .replace("{entryCreationDate}", Utils.formatDateTime(entry.entryCreationDate()))
-                    .replace("{entryUpdateDate}", Utils.formatDateTime(entry.entryUpdateDate()))
+                    .replace("{entryCreationDate}", GeneralUtils.formatDateTime(entry.entryCreationDate()))
+                    .replace("{entryUpdateDate}", GeneralUtils.formatDateTime(entry.entryUpdateDate()))
                     .build().toChatComponentText());
         }
 

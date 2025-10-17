@@ -15,30 +15,14 @@
  */
 package io.github.communityradargg.forgemod.event;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import io.github.communityradargg.forgemod.util.Utils;
+import io.github.communityradargg.forgemod.util.GeneralUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import org.jetbrains.annotations.NotNull;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 /**
  * A class containing listeners for player connect and disconnect from and to servers.
  */
 public class ClientConnectionDisconnectListener {
-    private final CommunityRadarMod communityRadarMod;
-
-    /**
-     * Constructs the class {@link ClientConnectionDisconnectListener}.
-     *
-     * @param communityRadarMod An instance of the {@link CommunityRadarMod} class.
-     */
-    public ClientConnectionDisconnectListener(final @NotNull CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
-    }
-
     /**
      * The listener for the {@link FMLNetworkEvent.ClientConnectedToServerEvent} event.
      *
@@ -46,21 +30,7 @@ public class ClientConnectionDisconnectListener {
      */
     @SubscribeEvent
     public void onFMLNetworkClientConnectedToServer(final FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (event.isLocal()) {
-            return;
-        }
-
-        final SocketAddress socketAddress = event.getManager().getRemoteAddress();
-        if (!(socketAddress instanceof InetSocketAddress)) {
-            return;
-        }
-
-        final String hostname = ((InetSocketAddress) socketAddress).getHostName();
-        if (Utils.isGrieferGamesHostName(hostname)) {
-            communityRadarMod.setOnGrieferGames(true);
-            return;
-        }
-        communityRadarMod.setOnGrieferGames(false);
+        GeneralUtils.setOnGrieferGames(event.isLocal(), event.getManager().getRemoteAddress());
     }
 
     /**
@@ -70,6 +40,6 @@ public class ClientConnectionDisconnectListener {
      */
     @SubscribeEvent
     public void onFMLNetworkClientDisconnectionFromServer(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        communityRadarMod.setOnGrieferGames(false);
+        GeneralUtils.setOnGrieferGames(false);
     }
 }

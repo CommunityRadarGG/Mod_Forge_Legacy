@@ -16,6 +16,7 @@
 package io.github.communityradargg.forgemod.event;
 
 import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.util.GeneralUtils;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -43,7 +44,7 @@ public class PlayerNameFormatListener {
      */
     @SubscribeEvent
     public void onPlayerNameFormat(final PlayerEvent.NameFormat event) {
-        if (!communityRadarMod.isOnGrieferGames()) {
+        if (!GeneralUtils.isOnGrieferGames()) {
             return;
         }
         Utils.updatePlayerNameTag(communityRadarMod, event.entityPlayer, communityRadarMod.getListManager().getExistingPrefixes());

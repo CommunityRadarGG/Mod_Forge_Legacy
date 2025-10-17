@@ -21,6 +21,8 @@ import io.github.communityradargg.forgemod.event.ClientConnectionDisconnectListe
 import io.github.communityradargg.forgemod.event.KeyInputListener;
 import io.github.communityradargg.forgemod.event.PlayerNameFormatListener;
 import io.github.communityradargg.forgemod.radarlistmanager.RadarListManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -39,12 +41,10 @@ import java.nio.file.Paths;
  * This class represents the main class of the mod.
  */
 @Mod(modid = CommunityRadarMod.MOD_ID)
-public class CommunityRadarMod {
-    public static final String MOD_ID = "communityradar";
+public class CommunityRadarMod implements ModSpecific {
     private static final Logger LOGGER = LogManager.getLogger(CommunityRadarMod.class);
     private RadarListManager listManager;
     private String version;
-    private boolean onGrieferGames = false;
 
     /**
      * The listener for the {@link FMLInitializationEvent} event.
@@ -59,7 +59,7 @@ public class CommunityRadarMod {
         version = modContainer == null ? "UNKNOWN" : modContainer.getVersion();
 
         final File directoryPath = Paths.get(new File("")
-                        .getAbsolutePath(),"communityradar", "lists")
+                        .getAbsolutePath(), "communityradar", "lists")
                 .toFile();
         if (!directoryPath.exists() && !directoryPath.mkdirs()) {
             LOGGER.error("Could not create directory: {}", directoryPath);
@@ -81,7 +81,7 @@ public class CommunityRadarMod {
         MinecraftForge.EVENT_BUS.register(new ClientChatReceivedListener(this));
         MinecraftForge.EVENT_BUS.register(new PlayerNameFormatListener(this));
         MinecraftForge.EVENT_BUS.register(new KeyInputListener(this));
-        MinecraftForge.EVENT_BUS.register(new ClientConnectionDisconnectListener(this));
+        MinecraftForge.EVENT_BUS.register(new ClientConnectionDisconnectListener());
     }
 
     /**
@@ -113,31 +113,18 @@ public class CommunityRadarMod {
         return listManager;
     }
 
-    /**
-     * Gets the GrieferGames connection state.
-     *
-     * @return Returns the GrieferGames connection state.
-     */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isOnGrieferGames() {
-        return onGrieferGames;
-    }
-
-    /**
-     * Sets the GrieferGames connection state.
-     *
-     * @param onGrieferGames The GrieferGames connection state to set.
-     */
-    public void setOnGrieferGames(final boolean onGrieferGames) {
-        this.onGrieferGames = onGrieferGames;
-    }
-
-    /**
-     * Gets the version.
-     *
-     * @return Returns the version.
-     */
+    @Override
     public String getVersion() {
         return version;
+    }
+
+    @Override
+    public void sendMessage(final @NotNull String message) {
+        if (Minecraft.getMinecraft().thePlayer == null) {
+            LOGGER.warn("Could not add message to chat. Player is null. The message is following: {}", message);
+            return;
+        }
+
+        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(message));
     }
 }

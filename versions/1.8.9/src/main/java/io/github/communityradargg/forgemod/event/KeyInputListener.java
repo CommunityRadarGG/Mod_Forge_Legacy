@@ -16,6 +16,7 @@
 package io.github.communityradargg.forgemod.event;
 
 import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.util.GeneralUtils;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,7 +45,7 @@ public class KeyInputListener {
      */
     @SubscribeEvent
     public void onKeyInput(final InputEvent.KeyInputEvent event) {
-        if (!communityRadarMod.isOnGrieferGames()) {
+        if (!GeneralUtils.isOnGrieferGames()) {
             return;
         }
 
