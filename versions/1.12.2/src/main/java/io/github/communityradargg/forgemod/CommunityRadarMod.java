@@ -22,8 +22,6 @@ import io.github.communityradargg.forgemod.event.KeyInputListener;
 import io.github.communityradargg.forgemod.event.PlayerNameFormatListener;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.VersionBridgeImpl;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -31,7 +29,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents the main class of the mod.
@@ -70,15 +67,5 @@ public class CommunityRadarMod {
      */
     private void registerCommands() {
         ClientCommandHandler.instance.registerCommand(new RadarCommand(commonHandler));
-    }
-
-    @Deprecated
-    public void sendMessage(final @NotNull String message) {
-        if (Minecraft.getMinecraft().player == null) {
-            LOGGER.warn("Could not add message to chat. Player is null. The message is following: {}", message);
-            return;
-        }
-
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
     }
 }

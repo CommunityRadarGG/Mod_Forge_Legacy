@@ -1,5 +1,7 @@
 package io.github.communityradargg.forgemod.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.logging.log4j.LogManager;
@@ -17,5 +19,15 @@ public class VersionBridgeImpl implements VersionBridge {
         }
 
         return modContainer.getVersion();
+    }
+
+    @Override
+    public void addMessageToChat(final @NotNull String message) {
+        if (Minecraft.getMinecraft().player == null) {
+            LOGGER.warn("Could not add message to chat. Player is null. The message is following: {}", message);
+            return;
+        }
+
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
     }
 }

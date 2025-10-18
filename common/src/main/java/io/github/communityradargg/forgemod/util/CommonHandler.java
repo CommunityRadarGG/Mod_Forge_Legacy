@@ -128,6 +128,15 @@ public class CommonHandler {
     }
 
     /**
+     * Adds a chat message to the player chat.
+     *
+     * @param message The message.
+     */
+    public void addMessageToChat(final @NotNull String message) {
+        versionBridge.addMessageToChat(message);
+    }
+
+    /**
      * Gets the list manager.
      *
      * @return Returns the list manager.
