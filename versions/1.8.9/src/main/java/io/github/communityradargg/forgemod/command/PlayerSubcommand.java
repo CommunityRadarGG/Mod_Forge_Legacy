@@ -21,7 +21,6 @@ import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import io.github.communityradargg.forgemod.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Optional;
@@ -32,19 +31,16 @@ import java.util.UUID;
  */
 public class PlayerSubcommand implements Subcommand {
     private final CommonHandler commonHandler;
-    private final EntityPlayer player;
     private final String[] args;
 
     /**
      * Constructs a {@link PlayerSubcommand}.
      *
      * @param commonHandler The common handler.
-     * @param player The player.
      * @param args The args.
      */
-    public PlayerSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    public PlayerSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull String[] args) {
         this.commonHandler = commonHandler;
-        this.player = player;
         this.args = args;
     }
 
@@ -52,20 +48,20 @@ public class PlayerSubcommand implements Subcommand {
     public void run() {
         if (args.length < 2) {
             // missing arguments
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
         switch (args[1].toUpperCase(Locale.ENGLISH)) {
             case "ADD":
-                handlePlayerAddSubcommand(player, args);
+                handlePlayerAddSubcommand(args);
                 break;
             case "REMOVE":
-                handlePlayerRemoveSubcommand(player, args);
+                handlePlayerRemoveSubcommand(args);
                 break;
             default:
-                new HelpSubcommand(commonHandler, player).run();
+                new HelpSubcommand(commonHandler).run();
                 break;
         }
     }
@@ -73,14 +69,13 @@ public class PlayerSubcommand implements Subcommand {
     /**
      * Handles the player - add subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handlePlayerAddSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handlePlayerAddSubcommand(final @NotNull String[] args) {
         if (args.length < 5) {
             // missing arguments
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
@@ -88,26 +83,26 @@ public class PlayerSubcommand implements Subcommand {
         final Optional<RadarList> listOptional = listManager.getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list not existing
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_FAILED)
+                    .build().getMessage());
             return;
         }
 
-        player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
-                .build().toChatComponentText());
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
+                .build().getMessage());
         Utils.getUUID(commonHandler, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
+                        .build().getMessage());
                 return;
             }
 
             final UUID uuid = uuidOptional.get();
             if (listOptional.get().isInList(uuid)) {
                 // player already on list
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_IN_LIST)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_IN_LIST)
+                        .build().getMessage());
                 return;
             }
 
@@ -118,13 +113,13 @@ public class PlayerSubcommand implements Subcommand {
 
             if (!commonHandler.getListManager().addRadarListEntry(args[2], uuid, args[3], notes.substring(0, notes.length() - 1))) {
                 // list is not private
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_FAILED)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_FAILED)
+                        .build().getMessage());
                 return;
             }
 
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_SUCCESS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_SUCCESS)
+                    .build().getMessage());
             Utils.updatePlayerByUuid(commonHandler, uuid, listManager.getExistingPrefixes());
         });
     }
@@ -132,14 +127,13 @@ public class PlayerSubcommand implements Subcommand {
     /**
      * Handles the player - remove subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handlePlayerRemoveSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handlePlayerRemoveSubcommand(final @NotNull String[] args) {
         if (args.length != 4) {
             // missing arguments
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
@@ -147,34 +141,34 @@ public class PlayerSubcommand implements Subcommand {
         final Optional<RadarList> listOptional = listManager.getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list is not existing
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_FAILED)
+                    .build().getMessage());
             return;
         }
 
-        player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
-                .build().toChatComponentText());
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
+                .build().getMessage());
         final RadarList list = listOptional.get();
         Utils.getUUID(commonHandler, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
+                        .build().getMessage());
                 return;
             }
 
             final UUID uuid = uuidOptional.get();
             if (!list.isInList(uuid)) {
                 // player uuid not on list
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_NOT_IN_LIST)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_NOT_IN_LIST)
+                        .build().getMessage());
                 return;
             }
 
             list.getPlayerMap().remove(uuid);
             Utils.updatePlayerByUuid(commonHandler, uuid, listManager.getExistingPrefixes());
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_SUCCESS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_SUCCESS)
+                    .build().getMessage());
         });
     }
 }

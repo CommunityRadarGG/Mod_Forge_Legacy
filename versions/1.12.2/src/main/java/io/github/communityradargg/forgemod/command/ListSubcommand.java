@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,19 +33,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ListSubcommand implements Subcommand {
     private final CommonHandler commonHandler;
-    private final EntityPlayer player;
     private final String[] args;
 
     /**
      * Constructs a {@link ListSubcommand}.
      *
      * @param commonHandler The common handler.
-     * @param player The player.
      * @param args The args.
      */
-    public ListSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    public ListSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull String[] args) {
         this.commonHandler = commonHandler;
-        this.player = player;
         this.args = args;
     }
 
@@ -54,26 +50,26 @@ public class ListSubcommand implements Subcommand {
     public void run() {
         if (args.length < 2) {
             // missing arguments
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
         switch (args[1].toUpperCase(Locale.ENGLISH)) {
             case "ADD":
-                handleListAddSubcommand(player, args);
+                handleListAddSubcommand(args);
                 break;
             case "PREFIX":
-                handleListPrefixSubcommand(player, args);
+                handleListPrefixSubcommand(args);
                 break;
             case "DELETE":
-                handleListDeleteSubcommand(player, args);
+                handleListDeleteSubcommand(args);
                 break;
             case "SHOW":
-                handleListShowSubcommand(player, args);
+                handleListShowSubcommand(args);
                 break;
             default:
-                new HelpSubcommand(commonHandler, player).run();
+                new HelpSubcommand(commonHandler).run();
                 break;
         }
     }
@@ -81,46 +77,44 @@ public class ListSubcommand implements Subcommand {
     /**
      * Handles the list - add subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handleListAddSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handleListAddSubcommand(final @NotNull String[] args) {
         if (args.length != 4) {
             // missing arguments
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
         if (commonHandler.getListManager().getRadarList(args[2]).isPresent()) {
             // list already existing
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
+                    .build().getMessage());
             return;
         }
 
         if (!commonHandler.getListManager().registerPrivateList(args[2], args[3])) {
             // list could not be registered
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
+                    .build().getMessage());
             return;
         }
 
-        player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_SUCCESS)
-                .build().toChatComponentText());
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_SUCCESS)
+                .build().getMessage());
     }
 
     /**
      * Handles the list - delete subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handleListDeleteSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handleListDeleteSubcommand(final @NotNull String[] args) {
         if (args.length != 3) {
             // missing arguments
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
@@ -132,66 +126,64 @@ public class ListSubcommand implements Subcommand {
 
         if (!listManager.unregisterList(args[2])) {
             // list is not existing, list is not private, file cannot be deleted
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_FAILED)
+                    .build().getMessage());
             return;
         }
 
         oldUuids.forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
-        player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_SUCCESS)
-                .build().toChatComponentText());
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_SUCCESS)
+                .build().getMessage());
     }
 
     /**
      * Handles the list - show subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handleListShowSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handleListShowSubcommand(final @NotNull String[] args) {
         if (args.length != 3) {
             // missing arguments
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
         final Optional<RadarList> listOptional = commonHandler.getListManager().getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list is not existing
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_FAILED)
+                    .build().getMessage());
             return;
         }
 
         final RadarList list = listOptional.get();
         if (list.getPlayerMap().isEmpty()) {
             // list is empty
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_EMPTY)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_EMPTY)
+                    .build().getMessage());
             return;
         }
 
         final StringBuilder players = new StringBuilder();
         list.getPlayerMap().values().forEach(value -> players.append(value.name()).append(", "));
-        player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_SUCCESS)
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_SUCCESS)
                 .replace("{list}", list.getNamespace())
                 .replaceWithColorCodes("{prefix}", listOptional.get().getPrefix())
                 .replace("{players}", players.substring(0, players.length() - 2))
-                .build().toChatComponentText());
+                .build().getMessage());
     }
 
     /**
      * Handles the list - prefix subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handleListPrefixSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    private void handleListPrefixSubcommand(final @NotNull String[] args) {
         if (args.length != 4) {
             // missing arguments
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
@@ -199,8 +191,8 @@ public class ListSubcommand implements Subcommand {
         final Optional<RadarList> listOptional = listManager.getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list is not existing
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_FAILED)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_FAILED)
+                    .build().getMessage());
             return;
         }
 
@@ -210,8 +202,8 @@ public class ListSubcommand implements Subcommand {
         list.saveList();
         list.getPlayerMap().keySet().forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
 
-        player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_SUCCESS)
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_SUCCESS)
                 .replaceWithColorCodes("{prefix}", args[3])
-                .build().toChatComponentText());
+                .build().getMessage());
     }
 }

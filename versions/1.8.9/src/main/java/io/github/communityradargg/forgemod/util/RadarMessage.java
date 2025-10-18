@@ -15,7 +15,6 @@
  */
 package io.github.communityradargg.forgemod.util;
 
-import net.minecraft.util.ChatComponentText;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,12 +34,12 @@ public class RadarMessage {
     }
 
     /**
-     * Converts this class instance to a {@link ChatComponentText}.
+     * Gets the message.
      *
-     * @return Returns the message converted to a {@link ChatComponentText}.
+     * @return Returns the message.
      */
-    public @NotNull ChatComponentText toChatComponentText() {
-        return new ChatComponentText(message);
+    public @NotNull String getMessage() {
+        return message;
     }
 
     /**

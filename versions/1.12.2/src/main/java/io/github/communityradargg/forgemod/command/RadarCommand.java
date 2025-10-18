@@ -71,34 +71,33 @@ public class RadarCommand extends CommandBase {
     @Override
     public void execute(final @NotNull MinecraftServer server, final @NotNull ICommandSender sender, final String @NotNull [] args) {
         if (!(sender instanceof EntityPlayer)) {
-            sender.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.NOT_PLAYER)
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.NOT_PLAYER)
                     .build()
-                    .toChatComponentText());
+                    .getMessage());
             return;
         }
 
-        final EntityPlayer player = (EntityPlayer) sender;
         Subcommand subcommand = null;
         if (args.length == 0) {
-            subcommand = new HelpSubcommand(commonHandler, player);
+            subcommand = new HelpSubcommand(commonHandler);
         }
 
         if (subcommand == null) {
             switch (args[0].toUpperCase(Locale.ENGLISH)) {
                 case "CHECK":
-                    subcommand = new CheckSubcommand(commonHandler, player, args);
+                    subcommand = new CheckSubcommand(commonHandler, args);
                     break;
                 case "LIST":
-                    subcommand = new ListSubcommand(commonHandler, player, args);
+                    subcommand = new ListSubcommand(commonHandler, args);
                     break;
                 case "PLAYER":
-                    subcommand = new PlayerSubcommand(commonHandler, player, args);
+                    subcommand = new PlayerSubcommand(commonHandler, args);
                     break;
                 case "LISTS":
-                    subcommand = new ListsSubcommand(commonHandler, player);
+                    subcommand = new ListsSubcommand(commonHandler);
                     break;
                 default:
-                    subcommand = new HelpSubcommand(commonHandler, player);
+                    subcommand = new HelpSubcommand(commonHandler);
                     break;
             }
         }

@@ -19,7 +19,6 @@ import io.github.communityradargg.forgemod.radarlistmanager.RadarListVisibility;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
-import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,17 +26,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ListsSubcommand implements Subcommand {
     private final CommonHandler commonHandler;
-    private final EntityPlayer player;
 
     /**
      * Constructs a {@link ListsSubcommand}.
      *
      * @param commonHandler The common handler.
-     * @param player The player.
      */
-    public ListsSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player) {
+    public ListsSubcommand(final @NotNull CommonHandler commonHandler) {
         this.commonHandler = commonHandler;
-        this.player = player;
     }
 
     @Override
@@ -52,13 +48,13 @@ public class ListsSubcommand implements Subcommand {
 
         if (listsText.length() > 0) {
             // players on the list
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.Lists.FOUND)
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Lists.FOUND)
                     .replace("{lists}", listsText.substring(0, listsText.length() - 2))
-                    .build().toChatComponentText());
+                    .build().getMessage());
         } else {
             // list is empty
-            player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.Lists.EMPTY)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Lists.EMPTY)
+                    .build().getMessage());
         }
     }
 }

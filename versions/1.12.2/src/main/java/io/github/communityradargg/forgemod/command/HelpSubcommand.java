@@ -18,7 +18,6 @@ package io.github.communityradargg.forgemod.command;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
-import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,24 +25,21 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HelpSubcommand implements Subcommand {
     private final CommonHandler commonHandler;
-    private final EntityPlayer player;
 
     /**
      * Constructs a {@link HelpSubcommand}.
      *
      * @param commonHandler The common handler.
-     * @param player The player.
      */
-    public HelpSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player) {
+    public HelpSubcommand(final @NotNull CommonHandler commonHandler) {
         this.commonHandler = commonHandler;
-        this.player = player;
     }
 
     @Override
     public void run() {
-        player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.HELP)
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.HELP)
                 .replace("{code_version}", commonHandler.getVersion())
                 .excludePrefix()
-                .build().toChatComponentText());
+                .build().getMessage());
     }
 }

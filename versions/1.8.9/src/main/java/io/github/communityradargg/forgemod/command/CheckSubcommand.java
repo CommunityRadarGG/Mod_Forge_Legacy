@@ -22,7 +22,6 @@ import io.github.communityradargg.forgemod.util.RadarMessage;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
@@ -31,19 +30,16 @@ import java.util.Optional;
  */
 public class CheckSubcommand implements Subcommand {
     private final CommonHandler commonHandler;
-    private final EntityPlayer player;
     private final String[] args;
 
     /**
      * Constructs a {@link CheckSubcommand}.
      *
      * @param commonHandler The common handler.
-     * @param player The player.
      * @param args The args.
      */
-    public CheckSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull String[] args) {
+    public CheckSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull String[] args) {
         this.commonHandler = commonHandler;
-        this.player = player;
         this.args = args;
     }
 
@@ -51,61 +47,58 @@ public class CheckSubcommand implements Subcommand {
     public void run() {
         if (args.length != 2) {
             // missing arguments
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.MISSING_ARGS)
+                    .build().getMessage());
             return;
         }
 
         if (args[1].equalsIgnoreCase("*")) {
             // check all argument
-            handleCheckAllSubcommand(player);
+            handleCheckAllSubcommand();
             return;
         }
-        handleCheckPlayerSubcommand(player, args);
+        handleCheckPlayerSubcommand(args);
     }
 
     /**
      * Handles the check - player subcommand.
      *
-     * @param player The player, which executed the subcommand.
      * @param args The arguments passed to the main command.
      */
-    private void handleCheckPlayerSubcommand(final @NotNull EntityPlayer player, final @NotNull String[] args) {
-        player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
-                .build().toChatComponentText());
+    private void handleCheckPlayerSubcommand(final @NotNull String[] args) {
+        commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
+                .build().getMessage());
         Utils.getUUID(commonHandler, args[1]).thenAccept(checkPlayerOptional -> {
             if (!checkPlayerOptional.isPresent()) {
                 // player uuid could not be fetched
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)
+                        .build().getMessage());
                 return;
             }
 
             final Optional<RadarListEntry> entryOptional = commonHandler.getListManager().getRadarListEntry(checkPlayerOptional.get());
             if (!entryOptional.isPresent()) {
                 // player uuid is on no list
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)
+                        .build().getMessage());
                 return;
             }
 
             final RadarListEntry entry = entryOptional.get();
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.FOUND + "\n" + Messages.Check.CHECK_ENTRY)
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.FOUND + "\n" + Messages.Check.CHECK_ENTRY)
                     .replaceWithColorCodes("{prefix}", commonHandler.getListManager().getPrefix(entry.uuid()))
                     .replace("{name}", entry.name())
                     .replace("{cause}", entry.cause())
                     .replace("{entryCreationDate}", commonHandler.formatDateTime(entry.entryCreationDate()))
                     .replace("{entryUpdateDate}", commonHandler.formatDateTime(entry.entryUpdateDate()))
-                    .build().toChatComponentText());
+                    .build().getMessage());
         });
     }
 
     /**
      * Handles the check - all subcommand.
-     *
-     * @param player The player, which executed the subcommand.
      */
-    private void handleCheckAllSubcommand(final @NotNull EntityPlayer player) {
+    private void handleCheckAllSubcommand() {
         boolean anyPlayerFound = false;
         for (final NetworkPlayerInfo networkPlayer : Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap()) {
             if (networkPlayer.getGameProfile().getId() == null) {
@@ -120,24 +113,24 @@ public class CheckSubcommand implements Subcommand {
             }
 
             if (!anyPlayerFound) {
-                player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.EVERYONE)
-                        .build().toChatComponentText());
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.EVERYONE)
+                        .build().getMessage());
                 anyPlayerFound = true;
             }
 
             final RadarListEntry entry = listEntryOptional.get();
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.CHECK_ENTRY)
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.CHECK_ENTRY)
                     .replaceWithColorCodes("{prefix}", commonHandler.getListManager().getPrefix(entry.uuid()))
                     .replace("{name}", entry.name())
                     .replace("{cause}", entry.cause())
                     .replace("{entryCreationDate}", commonHandler.formatDateTime(entry.entryCreationDate()))
                     .replace("{entryUpdateDate}", commonHandler.formatDateTime(entry.entryUpdateDate()))
-                    .build().toChatComponentText());
+                    .build().getMessage());
         }
 
         if (!anyPlayerFound) {
-            player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.Check.NOT_FOUND)
-                    .build().toChatComponentText());
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.NOT_FOUND)
+                    .build().getMessage());
         }
     }
 }
