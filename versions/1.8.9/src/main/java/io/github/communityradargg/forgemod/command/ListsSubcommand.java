@@ -15,8 +15,8 @@
  */
 package io.github.communityradargg.forgemod.command;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
 import io.github.communityradargg.forgemod.radarlistmanager.RadarListVisibility;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,25 +26,25 @@ import org.jetbrains.annotations.NotNull;
  * Holds the logic of the lists subcommand.
  */
 public class ListsSubcommand implements Subcommand {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
     private final EntityPlayer player;
 
     /**
      * Constructs a {@link ListsSubcommand}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param player The player.
      */
-    public ListsSubcommand(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull EntityPlayer player) {
-        this.communityRadarMod = communityRadarMod;
+    public ListsSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player) {
+        this.commonHandler = commonHandler;
         this.player = player;
     }
 
     @Override
     public void run() {
         final StringBuilder listsText = new StringBuilder();
-        for (final String namespace : communityRadarMod.getListManager().getNamespaces()) {
-            communityRadarMod.getListManager().getRadarList(namespace)
+        for (final String namespace : commonHandler.getListManager().getNamespaces()) {
+            commonHandler.getListManager().getRadarList(namespace)
                     .ifPresent(radarList -> listsText.append("§e").append(namespace).append(" §7(§c")
                             .append(radarList.getRadarListVisibility() == RadarListVisibility.PRIVATE ? Messages.Lists.PRIVATE : Messages.Lists.PUBLIC)
                             .append("§7)").append(", "));

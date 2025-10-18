@@ -15,7 +15,7 @@
  */
 package io.github.communityradargg.forgemod.command;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import net.minecraft.command.CommandBase;
@@ -31,15 +31,15 @@ import java.util.Locale;
  * The class containing all logic for the main radar command.
  */
 public class RadarCommand extends CommandBase {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
 
     /**
      * Constructs a {@link RadarCommand}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      */
-    public RadarCommand(final CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
+    public RadarCommand(final CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
     }
 
     @Override
@@ -79,25 +79,25 @@ public class RadarCommand extends CommandBase {
         final EntityPlayer player = (EntityPlayer) sender;
         Subcommand subcommand = null;
         if (args.length == 0) {
-            subcommand = new HelpSubcommand(communityRadarMod, player);
+            subcommand = new HelpSubcommand(commonHandler, player);
         }
 
         if (subcommand == null) {
             switch (args[0].toUpperCase(Locale.ENGLISH)) {
                 case "CHECK":
-                    subcommand = new CheckSubcommand(communityRadarMod, player, args);
+                    subcommand = new CheckSubcommand(commonHandler, player, args);
                     break;
                 case "LIST":
-                    subcommand = new ListSubcommand(communityRadarMod, player, args);
+                    subcommand = new ListSubcommand(commonHandler, player, args);
                     break;
                 case "PLAYER":
-                    subcommand = new PlayerSubcommand(communityRadarMod, player, args);
+                    subcommand = new PlayerSubcommand(commonHandler, player, args);
                     break;
                 case "LISTS":
-                    subcommand = new ListsSubcommand(communityRadarMod, player);
+                    subcommand = new ListsSubcommand(commonHandler, player);
                     break;
                 default:
-                    subcommand = new HelpSubcommand(communityRadarMod, player);
+                    subcommand = new HelpSubcommand(commonHandler, player);
                     break;
             }
         }

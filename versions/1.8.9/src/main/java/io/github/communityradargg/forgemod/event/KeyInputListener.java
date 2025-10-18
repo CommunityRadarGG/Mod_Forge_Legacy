@@ -15,8 +15,7 @@
  */
 package io.github.communityradargg.forgemod.event;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import io.github.communityradargg.forgemod.util.GeneralUtils;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,15 +26,15 @@ import org.jetbrains.annotations.NotNull;
  * A class containing a listener for key input.
  */
 public class KeyInputListener {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
 
     /**
      * Constructs the class {@link KeyInputListener}.
      *
-     * @param communityRadarMod An instance of the {@link CommunityRadarMod} class.
+     * @param commonHandler The common handler.
      */
-    public KeyInputListener(final @NotNull CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
+    public KeyInputListener(final @NotNull CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
     }
 
     /**
@@ -45,7 +44,7 @@ public class KeyInputListener {
      */
     @SubscribeEvent
     public void onKeyInput(final InputEvent.KeyInputEvent event) {
-        if (!GeneralUtils.isOnGrieferGames()) {
+        if (!commonHandler.isOnGrieferGames()) {
             return;
         }
 
@@ -54,6 +53,6 @@ public class KeyInputListener {
             return;
         }
 
-        Utils.updatePrefixes(communityRadarMod, communityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePrefixes(commonHandler, commonHandler.getListManager().getExistingPrefixes());
     }
 }

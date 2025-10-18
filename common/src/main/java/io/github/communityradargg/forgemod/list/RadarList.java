@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.communityradargg.forgemod.radarlistmanager;
+package io.github.communityradargg.forgemod.list;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
+import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
+import io.github.communityradargg.forgemod.radarlistmanager.RadarListVisibility;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,13 +30,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import io.github.communityradargg.forgemod.util.CommonHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class representing a radar list.
  */
 public class RadarList {
     private static final Logger LOGGER = LogManager.getLogger(RadarList.class);
-    private final transient CommunityRadarMod communityRadarMod;
+    private final transient CommonHandler commonHandler;
     @SerializedName("VERSION")
     @SuppressWarnings("unused") // needed in future
     private final int version = 1;
@@ -56,14 +57,14 @@ public class RadarList {
     /**
      * Constructs a {@link RadarList}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param namespace The namespace for the list.
      * @param prefix The prefix for the list.
      * @param url The url for the list.
      * @param visibility The visibility of the list.
      */
-    public RadarList(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String namespace, final @NotNull String prefix, final @NotNull String url, final @NotNull RadarListVisibility visibility) {
-        this.communityRadarMod = communityRadarMod;
+    public RadarList(final @NotNull CommonHandler commonHandler, final @NotNull String namespace, final @NotNull String prefix, final @NotNull String url, final @NotNull RadarListVisibility visibility) {
+        this.commonHandler = commonHandler;
         this.namespace = namespace;
         this.prefix = prefix;
         this.visibility = visibility;
@@ -181,7 +182,7 @@ public class RadarList {
      */
     public void saveList() {
         if (visibility == RadarListVisibility.PRIVATE) {
-            communityRadarMod.getListManager().saveRadarList(this);
+            commonHandler.getListManager().saveRadarList(this);
         }
     }
 
@@ -190,7 +191,7 @@ public class RadarList {
      */
     private void loadPublicList() {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(this.url).openStream()))) {
-            final List<RadarListEntry> players = RadarListManager.GSON
+            final List<RadarListEntry> players = ListManager.GSON
                     .fromJson(reader, new TypeToken<List<RadarListEntry>>() {}.getType());
             players.forEach(this::loadRadarListEntry);
         } catch (final IOException | JsonIOException | JsonSyntaxException e) {

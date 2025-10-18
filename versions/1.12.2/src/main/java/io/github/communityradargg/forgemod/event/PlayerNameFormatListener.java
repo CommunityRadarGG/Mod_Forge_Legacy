@@ -15,8 +15,7 @@
  */
 package io.github.communityradargg.forgemod.event;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import io.github.communityradargg.forgemod.util.GeneralUtils;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,15 +25,15 @@ import org.jetbrains.annotations.NotNull;
  * A class containing a listener for player name formatting.
  */
 public class PlayerNameFormatListener {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
 
     /**
      * Constructs the class {@link PlayerNameFormatListener}.
      *
-     * @param communityRadarMod An instance of the {@link CommunityRadarMod} class.
+     * @param commonHandler The common handler.
      */
-    public PlayerNameFormatListener(final @NotNull CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
+    public PlayerNameFormatListener(final @NotNull CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
     }
 
     /**
@@ -44,9 +43,9 @@ public class PlayerNameFormatListener {
      */
     @SubscribeEvent
     public void onPlayerNameFormat(final PlayerEvent.NameFormat event) {
-        if (!GeneralUtils.isOnGrieferGames()) {
+        if (!commonHandler.isOnGrieferGames()) {
             return;
         }
-        Utils.updatePlayerNameTag(communityRadarMod, event.getEntityPlayer(), communityRadarMod.getListManager().getExistingPrefixes());
+        Utils.updatePlayerNameTag(commonHandler, event.getEntityPlayer(), commonHandler.getListManager().getExistingPrefixes());
     }
 }

@@ -17,7 +17,6 @@ package io.github.communityradargg.forgemod.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import io.github.communityradargg.forgemod.CommunityRadarMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,11 +51,11 @@ public class Utils {
     /**
      * Tries to get the uuid to the player name from the world.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param playerName The player name to get the corresponding uuid.
      * @return Returns a CompletableFuture with an optional with the player uuid.
      */
-    public static @NotNull CompletableFuture<Optional<UUID>> getUUID(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String playerName) {
+    public static @NotNull CompletableFuture<Optional<UUID>> getUUID(final @NotNull CommonHandler commonHandler, final @NotNull String playerName) {
         // user has to be in a world
         if (Minecraft.getMinecraft().theWorld == null) {
             return CompletableFuture.completedFuture(Optional.empty());
@@ -80,17 +79,17 @@ public class Utils {
         }
 
         // If no player with same name is in the world, try fetching the UUID from the Mojang-API.
-        return requestUuidForName(communityRadarMod, playerName);
+        return requestUuidForName(commonHandler, playerName);
     }
 
     /**
      * Requests an uuid to a player name, from the Mojang API.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param playerName The player name to get the uuid for.
      * @return Returns a CompletableFuture with an optional with the requested uuid, it will be empty if an error occurred on requesting.
      */
-    private static @NotNull CompletableFuture<Optional<UUID>> requestUuidForName(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String playerName) {
+    private static @NotNull CompletableFuture<Optional<UUID>> requestUuidForName(final @NotNull CommonHandler commonHandler, final @NotNull String playerName) {
         final String urlText = MOJANG_API_NAME_TO_UUID + playerName;
         return CompletableFuture.supplyAsync(() -> {
             HttpURLConnection connection = null;
@@ -100,7 +99,7 @@ public class Utils {
                 connection.setConnectTimeout(3000);
                 connection.setReadTimeout(3000);
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", CommunityRadarMod.MOD_ID + "/" + communityRadarMod.getVersion());
+                connection.setRequestProperty("User-Agent", CommonHandler.MOD_ID + "/" + commonHandler.getVersionBridge().getVersion());
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     LOGGER.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());
@@ -161,24 +160,24 @@ public class Utils {
     /**
      * Updates a player display name and name tag by its uuid.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param uuid The uuid to update the corresponding player.
      */
-    public static void updatePlayerByUuid(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull UUID uuid, final @NotNull Set<String> oldPrefixes) {
-        getEntityPlayerByUuid(uuid).ifPresent(player -> updatePlayerNameTag(communityRadarMod, player, oldPrefixes));
-        getNetworkPlayerInfoByUuid(uuid).ifPresent(networkPlayerInfo -> updatePlayerPrefix(communityRadarMod, networkPlayerInfo, oldPrefixes));
+    public static void updatePlayerByUuid(final @NotNull CommonHandler commonHandler, final @NotNull UUID uuid, final @NotNull Set<String> oldPrefixes) {
+        getEntityPlayerByUuid(uuid).ifPresent(player -> updatePlayerNameTag(commonHandler, player, oldPrefixes));
+        getNetworkPlayerInfoByUuid(uuid).ifPresent(networkPlayerInfo -> updatePlayerPrefix(commonHandler, networkPlayerInfo, oldPrefixes));
     }
 
     /**
      * Handles updating the name tag of a player entity.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param player The player entity to update the name tag.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    public static void updatePlayerNameTag(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
+    public static void updatePlayerNameTag(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
         player.getPrefixes().removeIf(prefix -> oldPrefixes.stream().anyMatch(oldPrefix -> new ChatComponentText(oldPrefix.replace("&", "§") + " ").getUnformattedText().equals(prefix.getUnformattedText())));
-        final String addonPrefix = communityRadarMod.getListManager()
+        final String addonPrefix = commonHandler.getListManager()
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
 
@@ -190,22 +189,22 @@ public class Utils {
     /**
      * Handles updating the player prefixes in the display name.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    public static void updatePrefixes(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull Set<String> oldPrefixes) {
+    public static void updatePrefixes(final @NotNull CommonHandler commonHandler, final @NotNull Set<String> oldPrefixes) {
         Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap()
-                .forEach(player -> updatePlayerPrefix(communityRadarMod, player, oldPrefixes));
+                .forEach(player -> updatePlayerPrefix(commonHandler, player, oldPrefixes));
     }
 
     /**
      * Handles updating the player prefix in the display name of a single player.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param player The player to update.
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
-    private static void updatePlayerPrefix(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull NetworkPlayerInfo player, final @NotNull Set<String> oldPrefixes) {
+    private static void updatePlayerPrefix(final @NotNull CommonHandler commonHandler, final @NotNull NetworkPlayerInfo player, final @NotNull Set<String> oldPrefixes) {
         if (player.getGameProfile().getId() == null || player.getDisplayName() == null) {
             return;
         }
@@ -219,7 +218,7 @@ public class Utils {
             newDisplayName = displayName.getSiblings().get(displayName.getSiblings().size() - 1);
         }
 
-        final String addonPrefix = communityRadarMod.getListManager()
+        final String addonPrefix = commonHandler.getListManager()
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
         if (!addonPrefix.isEmpty()) {

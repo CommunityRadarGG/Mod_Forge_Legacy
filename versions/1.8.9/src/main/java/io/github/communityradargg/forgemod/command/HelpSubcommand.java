@@ -15,7 +15,7 @@
  */
 package io.github.communityradargg.forgemod.command;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,24 +25,24 @@ import org.jetbrains.annotations.NotNull;
  * Holds the logic of the help subcommand.
  */
 public class HelpSubcommand implements Subcommand {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
     private final EntityPlayer player;
 
     /**
      * Constructs a {@link HelpSubcommand}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler
      * @param player The player.
      */
-    public HelpSubcommand(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull EntityPlayer player) {
-        this.communityRadarMod = communityRadarMod;
+    public HelpSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player) {
+        this.commonHandler = commonHandler;
         this.player = player;
     }
 
     @Override
     public void run() {
         player.addChatComponentMessage(new RadarMessage.RadarMessageBuilder(Messages.HELP)
-                .replace("{code_version}", communityRadarMod.getVersion())
+                .replace("{code_version}", commonHandler.getVersionBridge().getVersion())
                 .excludePrefix()
                 .build().toChatComponentText());
     }

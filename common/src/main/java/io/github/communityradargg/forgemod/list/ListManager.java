@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.communityradargg.forgemod.radarlistmanager;
+package io.github.communityradargg.forgemod.list;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.github.communityradargg.forgemod.CommunityRadarMod;
+import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
+import io.github.communityradargg.forgemod.radarlistmanager.RadarListVisibility;
 import io.github.communityradargg.forgemod.radarlistmanager.adapters.GsonLocalDateTimeAdapter;
 import io.github.communityradargg.forgemod.radarlistmanager.adapters.GsonRadarListPlayerMapAdapter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -45,31 +41,54 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import io.github.communityradargg.forgemod.util.CommonHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A class containing the methods to manage lists.
  */
-public class RadarListManager {
-    private static final Logger LOGGER = LogManager.getLogger(RadarListManager.class);
+public class ListManager {
+    private static final Logger LOGGER = LogManager.getLogger(ListManager.class);
     static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter())
             .registerTypeAdapter(Map.class, new GsonRadarListPlayerMapAdapter())
             .create();
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
     private final List<RadarList> lists;
     private final String directoryPath;
 
     /**
-     * Constructs a {@link RadarListManager}
+     * Constructs a {@link ListManager}
      *
-     * @param communityRadarMod The mod main class instance.
-     * @param directoryPath The directory path of the list the manager manages.
+     * @param commonHandler The common handler.
      */
-    public RadarListManager(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull String directoryPath) {
+    public ListManager(final @NotNull CommonHandler commonHandler) {
         this.lists = new ArrayList<>();
-        this.communityRadarMod = communityRadarMod;
-        this.directoryPath = directoryPath;
+        this.commonHandler = commonHandler;
+
+        directoryPath = createDirectoryPath();
+    }
+
+    // TODO Look if this can be optimized in Java 8
+    /**
+     * Creates the list directory path.
+     *
+     * @return Returns the list directory path.
+     */
+    private String createDirectoryPath() {
+        final File directoryFilePath = Paths.get(new File("")
+                        .getAbsolutePath(), "communityradar", "lists")
+                .toFile();
+
+        if (!directoryFilePath.exists() && !directoryFilePath.mkdirs()) {
+            LOGGER.error("Could not create directory: {}", directoryPath);
+        }
+
+        return directoryFilePath.getAbsolutePath() + "/";
     }
 
     /**
@@ -193,7 +212,7 @@ public class RadarListManager {
             return false;
         }
 
-        lists.add(new RadarList(communityRadarMod, namespace, prefix, directoryPath + namespace + ".json", RadarListVisibility.PRIVATE));
+        lists.add(new RadarList(commonHandler, namespace, prefix, directoryPath + namespace + ".json", RadarListVisibility.PRIVATE));
 
         final Optional<RadarList> listOptional = getRadarList(namespace);
         if (!listOptional.isPresent()) {
@@ -219,7 +238,7 @@ public class RadarListManager {
             return false;
         }
 
-        lists.add(new RadarList(communityRadarMod, namespace, prefix, url, RadarListVisibility.PUBLIC));
+        lists.add(new RadarList(commonHandler, namespace, prefix, url, RadarListVisibility.PUBLIC));
         return true;
     }
 

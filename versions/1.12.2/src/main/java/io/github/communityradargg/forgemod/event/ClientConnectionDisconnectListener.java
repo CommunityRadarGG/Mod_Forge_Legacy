@@ -15,14 +15,26 @@
  */
 package io.github.communityradargg.forgemod.event;
 
-import io.github.communityradargg.forgemod.util.GeneralUtils;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class containing listeners for player connect and disconnect from and to servers.
  */
 public class ClientConnectionDisconnectListener {
+    private final CommonHandler commonHandler;
+
+    /**
+     * Constructs a {@link ClientConnectionDisconnectListener}.
+     *
+     * @param commonHandler The common handler.
+     */
+    public ClientConnectionDisconnectListener(final @NotNull CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
+    }
+
     /**
      * The listener for the {@link FMLNetworkEvent.ClientConnectedToServerEvent} event.
      *
@@ -30,7 +42,7 @@ public class ClientConnectionDisconnectListener {
      */
     @SubscribeEvent
     public void onFMLNetworkClientConnectedToServer(final FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        GeneralUtils.setOnGrieferGames(event.isLocal(), event.getManager().getRemoteAddress());
+        commonHandler.setOnGrieferGames(event.isLocal(), event.getManager().getRemoteAddress());
     }
 
     /**
@@ -40,6 +52,6 @@ public class ClientConnectionDisconnectListener {
      */
     @SubscribeEvent
     public void onFMLNetworkClientDisconnectionFromServer(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        GeneralUtils.setOnGrieferGames(false);
+        commonHandler.setOnGrieferGames(false);
     }
 }

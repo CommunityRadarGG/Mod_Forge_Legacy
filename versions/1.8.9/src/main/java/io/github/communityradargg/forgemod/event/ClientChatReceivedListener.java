@@ -15,8 +15,7 @@
  */
 package io.github.communityradargg.forgemod.event;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import io.github.communityradargg.forgemod.util.GeneralUtils;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -34,15 +33,15 @@ public class ClientChatReceivedListener {
      * A pattern matching private messages (in and out) and payments (in and out) as well as global and plot chat messages with the player name (nicked, bedrock and java) as only group.
      */
     private static final Pattern PATTERN = Pattern.compile("[A-Za-z\\-+]+\\s\\u2503\\s(~?!?\\w{1,16})");
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
 
     /**
      * Constructs the class {@link ClientChatReceivedListener}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      */
-    public ClientChatReceivedListener(final @NotNull CommunityRadarMod communityRadarMod) {
-        this.communityRadarMod = communityRadarMod;
+    public ClientChatReceivedListener(final @NotNull CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
     }
 
     /**
@@ -52,7 +51,7 @@ public class ClientChatReceivedListener {
      */
     @SubscribeEvent
     public void onClientChatReceived(final ClientChatReceivedEvent event) {
-        if (!GeneralUtils.isOnGrieferGames()) {
+        if (!commonHandler.isOnGrieferGames()) {
             return;
         }
 
@@ -67,9 +66,9 @@ public class ClientChatReceivedListener {
             return;
         }
 
-        Utils.getUUID(communityRadarMod, playerName).thenAccept(uuid -> {
-            if (uuid.isPresent() && communityRadarMod.getListManager().isInList(uuid.get())) {
-                event.message = new ChatComponentText(communityRadarMod.getListManager().getPrefix(uuid.get()).replace("&", "§"))
+        Utils.getUUID(commonHandler, playerName).thenAccept(uuid -> {
+            if (uuid.isPresent() && commonHandler.getListManager().isInList(uuid.get())) {
+                event.message = new ChatComponentText(commonHandler.getListManager().getPrefix(uuid.get()).replace("&", "§"))
                         .appendText(" §r")
                         .appendText(event.message.getFormattedText());
             }

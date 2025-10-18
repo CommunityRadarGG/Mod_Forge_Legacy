@@ -15,9 +15,9 @@
  */
 package io.github.communityradargg.forgemod.command;
 
-import io.github.communityradargg.forgemod.CommunityRadarMod;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarList;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListManager;
+import io.github.communityradargg.forgemod.list.ListManager;
+import io.github.communityradargg.forgemod.list.RadarList;
+import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import io.github.communityradargg.forgemod.util.Utils;
@@ -33,19 +33,19 @@ import org.jetbrains.annotations.NotNull;
  * Holds the logic of the list subcommand.
  */
 public class ListSubcommand implements Subcommand {
-    private final CommunityRadarMod communityRadarMod;
+    private final CommonHandler commonHandler;
     private final EntityPlayer player;
     private final String[] args;
 
     /**
      * Constructs a {@link ListSubcommand}.
      *
-     * @param communityRadarMod The mod main class instance.
+     * @param commonHandler The common handler.
      * @param player The player.
      * @param args The args.
      */
-    public ListSubcommand(final @NotNull CommunityRadarMod communityRadarMod, final @NotNull EntityPlayer player, final @NotNull String[] args) {
-        this.communityRadarMod = communityRadarMod;
+    public ListSubcommand(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull String[] args) {
+        this.commonHandler = commonHandler;
         this.player = player;
         this.args = args;
     }
@@ -73,7 +73,7 @@ public class ListSubcommand implements Subcommand {
                 handleListShowSubcommand(player, args);
                 break;
             default:
-                new HelpSubcommand(communityRadarMod, player).run();
+                new HelpSubcommand(commonHandler, player).run();
                 break;
         }
     }
@@ -92,14 +92,14 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        if (communityRadarMod.getListManager().getRadarList(args[2]).isPresent()) {
+        if (commonHandler.getListManager().getRadarList(args[2]).isPresent()) {
             // list already existing
             player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
                     .build().toChatComponentText());
             return;
         }
 
-        if (!communityRadarMod.getListManager().registerPrivateList(args[2], args[3])) {
+        if (!commonHandler.getListManager().registerPrivateList(args[2], args[3])) {
             // list could not be registered
             player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.CREATE_FAILED)
                     .build().toChatComponentText());
@@ -124,7 +124,7 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        final RadarListManager listManager = communityRadarMod.getListManager();
+        final ListManager listManager = commonHandler.getListManager();
         final Set<String> oldPrefixes = listManager.getExistingPrefixes();
         final Set<UUID> oldUuids = listManager.getRadarList(args[2])
                 .map(radarList -> radarList.getPlayerMap().keySet())
@@ -137,7 +137,7 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        oldUuids.forEach(uuid -> Utils.updatePlayerByUuid(communityRadarMod, uuid, oldPrefixes));
+        oldUuids.forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
         player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_SUCCESS)
                 .build().toChatComponentText());
     }
@@ -156,7 +156,7 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        final Optional<RadarList> listOptional = communityRadarMod.getListManager().getRadarList(args[2]);
+        final Optional<RadarList> listOptional = commonHandler.getListManager().getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list is not existing
             player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.SHOW_FAILED)
@@ -195,7 +195,7 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        final RadarListManager listManager = communityRadarMod.getListManager();
+        final ListManager listManager = commonHandler.getListManager();
         final Optional<RadarList> listOptional = listManager.getRadarList(args[2]);
         if (!listOptional.isPresent()) {
             // list is not existing
@@ -208,7 +208,7 @@ public class ListSubcommand implements Subcommand {
         final Set<String> oldPrefixes = listManager.getExistingPrefixes();
         list.setPrefix(args[3]);
         list.saveList();
-        list.getPlayerMap().keySet().forEach(uuid -> Utils.updatePlayerByUuid(communityRadarMod, uuid, oldPrefixes));
+        list.getPlayerMap().keySet().forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
 
         player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_SUCCESS)
                 .replaceWithColorCodes("{prefix}", args[3])

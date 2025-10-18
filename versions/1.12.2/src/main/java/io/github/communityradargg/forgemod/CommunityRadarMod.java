@@ -20,31 +20,26 @@ import io.github.communityradargg.forgemod.event.ClientChatReceivedListener;
 import io.github.communityradargg.forgemod.event.ClientConnectionDisconnectListener;
 import io.github.communityradargg.forgemod.event.KeyInputListener;
 import io.github.communityradargg.forgemod.event.PlayerNameFormatListener;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListManager;
+import io.github.communityradargg.forgemod.util.CommonHandler;
+import io.github.communityradargg.forgemod.util.VersionBridgeImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 /**
  * This class represents the main class of the mod.
  */
-@Mod(modid = CommunityRadarMod.MOD_ID)
-public class CommunityRadarMod implements ModSpecific {
+@Mod(modid = CommonHandler.MOD_ID)
+public class CommunityRadarMod {
     private static final Logger LOGGER = LogManager.getLogger(CommunityRadarMod.class);
-    private RadarListManager listManager;
-    private String version;
+    private final CommonHandler commonHandler = new CommonHandler(new VersionBridgeImpl());
 
     /**
      * The listener for the {@link FMLInitializationEvent} event.
@@ -53,72 +48,31 @@ public class CommunityRadarMod implements ModSpecific {
      */
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        LOGGER.info("Loading the mod '{}'", MOD_ID);
+        LOGGER.info("Loading the mod '{}'", CommonHandler.MOD_ID);
 
-        final ModContainer modContainer = Loader.instance().getIndexedModList().get(MOD_ID);
-        version = modContainer == null ? "UNKNOWN" : modContainer.getVersion();
-
-        final File directoryPath = Paths.get(new File("")
-                        .getAbsolutePath(), "communityradar", "lists")
-                .toFile();
-        if (!directoryPath.exists() && !directoryPath.mkdirs()) {
-            LOGGER.error("Could not create directory: {}", directoryPath);
-        }
-
-        listManager = new RadarListManager(this, directoryPath.getAbsolutePath() + "/");
-        registerPublicLists();
-        // Needs to be after loading public lists
-        listManager.loadPrivateLists();
         registerEvents();
         registerCommands();
-        LOGGER.info("Successfully loaded the mod '{}'", MOD_ID);
+        LOGGER.info("Successfully loaded the mod '{}'", CommonHandler.MOD_ID);
     }
 
     /**
      * Registers the events.
      */
     private void registerEvents() {
-        MinecraftForge.EVENT_BUS.register(new ClientChatReceivedListener(this));
-        MinecraftForge.EVENT_BUS.register(new PlayerNameFormatListener(this));
-        MinecraftForge.EVENT_BUS.register(new KeyInputListener(this));
-        MinecraftForge.EVENT_BUS.register(new ClientConnectionDisconnectListener());
+        MinecraftForge.EVENT_BUS.register(new ClientChatReceivedListener(commonHandler));
+        MinecraftForge.EVENT_BUS.register(new PlayerNameFormatListener(commonHandler));
+        MinecraftForge.EVENT_BUS.register(new KeyInputListener(commonHandler));
+        MinecraftForge.EVENT_BUS.register(new ClientConnectionDisconnectListener(commonHandler));
     }
 
     /**
      * Registers the commands.
      */
     private void registerCommands() {
-        ClientCommandHandler.instance.registerCommand(new RadarCommand(this));
+        ClientCommandHandler.instance.registerCommand(new RadarCommand(commonHandler));
     }
 
-    /**
-     * Registers the public lists.
-     */
-    private void registerPublicLists() {
-        if (!listManager.registerPublicList("scammer", "&7[&cScammer&7]", "https://lists.community-radar.de/versions/v1/scammer.json")) {
-            LOGGER.error("Could not register public list 'scammers'!");
-        }
-
-        if (!listManager.registerPublicList("trusted", "&7[&aTrusted&7]", "https://lists.community-radar.de/versions/v1/trusted.json")) {
-            LOGGER.error("Could not register public list 'verbvllert_trusted'!");
-        }
-    }
-
-    /**
-     * Gets the {@link RadarListManager} instance.
-     *
-     * @return Returns the radar list manager instance.
-     */
-    public @NotNull RadarListManager getListManager() {
-        return listManager;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
+    @Deprecated
     public void sendMessage(final @NotNull String message) {
         if (Minecraft.getMinecraft().player == null) {
             LOGGER.warn("Could not add message to chat. Player is null. The message is following: {}", message);
