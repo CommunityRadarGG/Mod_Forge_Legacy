@@ -99,7 +99,7 @@ public class Utils {
                 connection.setConnectTimeout(3000);
                 connection.setReadTimeout(3000);
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", CommonHandler.MOD_ID + "/" + commonHandler.getVersionBridge().getVersion());
+                connection.setRequestProperty("User-Agent", CommonHandler.MOD_ID + "/" + commonHandler.getVersion());
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     LOGGER.warn("Requesting data from '{}' resulted in following status code: {}", urlText, connection.getResponseCode());

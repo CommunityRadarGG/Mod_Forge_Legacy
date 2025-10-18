@@ -42,7 +42,7 @@ public class HelpSubcommand implements Subcommand {
     @Override
     public void run() {
         player.sendMessage(new RadarMessage.RadarMessageBuilder(Messages.HELP)
-                .replace("{code_version}", commonHandler.getVersionBridge().getVersion())
+                .replace("{code_version}", commonHandler.getVersion())
                 .excludePrefix()
                 .build().toChatComponentText());
     }

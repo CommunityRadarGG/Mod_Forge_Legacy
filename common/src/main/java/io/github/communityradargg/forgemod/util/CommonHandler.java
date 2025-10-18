@@ -119,12 +119,12 @@ public class CommonHandler {
     }
 
     /**
-     * Gets the version bridge.
+     * Gets the mod version.
      *
-     * @return Returns the version bridge.
+     * @return Returns the mod version.
      */
-    public VersionBridge getVersionBridge() {
-        return versionBridge;
+    public @NotNull String getVersion() {
+        return versionBridge.getVersion();
     }
 
     /**
