@@ -16,7 +16,6 @@
 package io.github.communityradargg.forgemod.event;
 
 import io.github.communityradargg.forgemod.util.CommonHandler;
-import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -66,7 +65,7 @@ public class ClientChatReceivedListener {
             return;
         }
 
-        Utils.getUUID(commonHandler, playerName).thenAccept(uuid -> {
+        commonHandler.getUuidByPlayerName(commonHandler, playerName).thenAccept(uuid -> {
             if (uuid.isPresent() && commonHandler.getListManager().isInList(uuid.get())) {
                 event.message = new ChatComponentText(commonHandler.getListManager().getPrefix(uuid.get()).replace("&", "§"))
                         .appendText(" §r")

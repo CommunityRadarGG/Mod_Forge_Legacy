@@ -90,7 +90,7 @@ public class PlayerSubcommand implements Subcommand {
 
         commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
                 .build().getMessage());
-        Utils.getUUID(commonHandler, args[3]).thenAccept(uuidOptional -> {
+        commonHandler.getUuidByPlayerName(commonHandler, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
                 commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)
@@ -150,7 +150,7 @@ public class PlayerSubcommand implements Subcommand {
                 .build().getMessage());
 
         final RadarList list = listOptional.get();
-        Utils.getUUID(commonHandler, args[3]).thenAccept(uuidOptional -> {
+        commonHandler.getUuidByPlayerName(commonHandler, args[3]).thenAccept(uuidOptional -> {
             if (!uuidOptional.isPresent()) {
                 // player uuid could not be fetched
                 commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(args[3].startsWith("!") ? Messages.Player.NAME_INVALID_BEDROCK : Messages.Player.NAME_INVALID)

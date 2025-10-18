@@ -19,7 +19,6 @@ import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
-import io.github.communityradargg.forgemod.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +67,7 @@ public class CheckSubcommand implements Subcommand {
     private void handleCheckPlayerSubcommand(final @NotNull String[] args) {
         commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.INPUT_PROCESSING)
                 .build().getMessage());
-        Utils.getUUID(commonHandler, args[1]).thenAccept(checkPlayerOptional -> {
+        commonHandler.getUuidByPlayerName(commonHandler, args[1]).thenAccept(checkPlayerOptional -> {
             if (!checkPlayerOptional.isPresent()) {
                 // player uuid could not be fetched
                 commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.FAILED)

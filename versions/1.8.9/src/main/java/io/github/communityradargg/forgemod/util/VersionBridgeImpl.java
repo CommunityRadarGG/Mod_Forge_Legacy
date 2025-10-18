@@ -1,12 +1,16 @@
 package io.github.communityradargg.forgemod.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import java.util.Optional;
+import java.util.UUID;
 
 public class VersionBridgeImpl implements VersionBridge {
     private static final Logger LOGGER = LogManager.getLogger(VersionBridgeImpl.class);
@@ -29,5 +33,25 @@ public class VersionBridgeImpl implements VersionBridge {
         }
 
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(message));
+    }
+
+    @Override
+    public boolean isNotInWorld() {
+        return Minecraft.getMinecraft().theWorld == null;
+    }
+
+    @Override
+    public Optional<UUID> getPlayerUuidByNameFromWorld(final @NotNull String playerName) {
+        final NetHandlerPlayClient connection = Minecraft.getMinecraft().getNetHandler();
+        if (connection == null) {
+            return Optional.empty();
+        }
+
+        for (final NetworkPlayerInfo networkPlayerInfo : connection.getPlayerInfoMap()) {
+            if (networkPlayerInfo.getGameProfile().getName().equalsIgnoreCase(playerName)) {
+                return Optional.of(networkPlayerInfo.getGameProfile().getId());
+            }
+        }
+        return Optional.empty();
     }
 }
