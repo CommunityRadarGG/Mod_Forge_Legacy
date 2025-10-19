@@ -20,7 +20,6 @@ import io.github.communityradargg.forgemod.list.RadarList;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
-import io.github.communityradargg.forgemod.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Optional;
@@ -120,7 +119,7 @@ public class PlayerSubcommand implements Subcommand {
 
             commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.ADD_SUCCESS)
                     .build().getMessage());
-            Utils.updatePlayerByUuid(commonHandler, uuid, listManager.getExistingPrefixes());
+            commonHandler.updatePlayerByUuid(uuid, listManager.getExistingPrefixes());
         });
     }
 
@@ -166,7 +165,7 @@ public class PlayerSubcommand implements Subcommand {
             }
 
             list.getPlayerMap().remove(uuid);
-            Utils.updatePlayerByUuid(commonHandler, uuid, listManager.getExistingPrefixes());
+            commonHandler.updatePlayerByUuid(uuid, listManager.getExistingPrefixes());
             commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Player.REMOVE_SUCCESS)
                     .build().getMessage());
         });

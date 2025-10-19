@@ -16,46 +16,42 @@
 package io.github.communityradargg.forgemod.command;
 
 import io.github.communityradargg.forgemod.util.CommonHandler;
-import io.github.communityradargg.forgemod.util.Messages;
-import io.github.communityradargg.forgemod.util.RadarMessage;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * The class containing all logic for the radar command.
  */
 public class RadarCommand extends CommandBase {
-    private final CommonHandler commonHandler;
+    private final RootRadarCommand rootRadarCommand;
 
     /**
      * Constructs a {@link RadarCommand}.
      *
      * @param commonHandler The common handler.
      */
-    public RadarCommand(final CommonHandler commonHandler) {
-        this.commonHandler = commonHandler;
+    public RadarCommand(final @NotNull CommonHandler commonHandler) {
+        rootRadarCommand = new RootRadarCommand(commonHandler);
     }
 
     @Override
     public @NotNull String getName() {
-        return "radar";
+        return RootRadarCommand.COMMAND_NAME;
     }
 
     @Override
     public @NotNull String getUsage(final @NotNull ICommandSender sender) {
-        return "/radar";
+        return "/" + RootRadarCommand.COMMAND_NAME;
     }
 
     @Override
     public @NotNull List<String> getAliases() {
-        return Arrays.asList("communityradar", "scammer", "trustedmm", "mm");
+        return RootRadarCommand.COMMAND_ALIASES;
     }
 
     @Override
@@ -70,38 +66,6 @@ public class RadarCommand extends CommandBase {
 
     @Override
     public void execute(final @NotNull MinecraftServer server, final @NotNull ICommandSender sender, final String @NotNull [] args) {
-        if (!(sender instanceof EntityPlayer)) {
-            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.NOT_PLAYER)
-                    .build()
-                    .getMessage());
-            return;
-        }
-
-        Subcommand subcommand = null;
-        if (args.length == 0) {
-            subcommand = new HelpSubcommand(commonHandler);
-        }
-
-        if (subcommand == null) {
-            switch (args[0].toUpperCase(Locale.ENGLISH)) {
-                case "CHECK":
-                    subcommand = new CheckSubcommand(commonHandler, args);
-                    break;
-                case "LIST":
-                    subcommand = new ListSubcommand(commonHandler, args);
-                    break;
-                case "PLAYER":
-                    subcommand = new PlayerSubcommand(commonHandler, args);
-                    break;
-                case "LISTS":
-                    subcommand = new ListsSubcommand(commonHandler);
-                    break;
-                default:
-                    subcommand = new HelpSubcommand(commonHandler);
-                    break;
-            }
-        }
-
-        subcommand.run();
+            rootRadarCommand.execute(args);
     }
 }

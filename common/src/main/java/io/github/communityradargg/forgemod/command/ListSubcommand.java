@@ -20,7 +20,6 @@ import io.github.communityradargg.forgemod.list.RadarList;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.RadarMessage;
-import io.github.communityradargg.forgemod.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Locale;
@@ -131,7 +130,7 @@ public class ListSubcommand implements Subcommand {
             return;
         }
 
-        oldUuids.forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
+        oldUuids.forEach(uuid -> commonHandler.updatePlayerByUuid(uuid, oldPrefixes));
         commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.DELETE_SUCCESS)
                 .build().getMessage());
     }
@@ -200,7 +199,7 @@ public class ListSubcommand implements Subcommand {
         final Set<String> oldPrefixes = listManager.getExistingPrefixes();
         list.setPrefix(args[3]);
         list.saveList();
-        list.getPlayerMap().keySet().forEach(uuid -> Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes));
+        list.getPlayerMap().keySet().forEach(uuid -> commonHandler.updatePlayerByUuid(uuid, oldPrefixes));
 
         commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.List.PREFIX_SUCCESS)
                 .replaceWithColorCodes("{prefix}", args[3])

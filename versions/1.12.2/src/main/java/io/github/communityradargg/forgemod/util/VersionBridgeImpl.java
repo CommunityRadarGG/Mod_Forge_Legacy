@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VersionBridgeImpl implements VersionBridge {
@@ -54,5 +56,10 @@ public class VersionBridgeImpl implements VersionBridge {
                     return new PlayerInfo(gameProfile.getId(), gameProfile.getName());
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updatePlayerByUuid(final @NotNull CommonHandler commonHandler, final @NotNull UUID uuid, final @NotNull Set<@NotNull String> oldPrefixes) {
+        Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes);
     }
 }

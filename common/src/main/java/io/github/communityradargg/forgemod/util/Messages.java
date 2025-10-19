@@ -21,9 +21,7 @@ package io.github.communityradargg.forgemod.util;
 public class Messages {
     public static final String PREFIX = "§8[§cCommunityRadar§8]§r ";
     public static final String MISSING_ARGS = "§cNicht genug Argumente. Gib '/radar' für den korrekten Syntax ein.";
-    public static final String NOT_PLAYER = "§cDieser Befehl kann nur von Spielern ausgeführt werden.";
     public static final String INPUT_PROCESSING = "§7Deine Eingabe wird verarbeitet. Dies kann einige Augenblicke benötigen.";
-
     public static final String HELP =
             "§7§l--------- §eRadar-Hilfe §7§l---------§r\n" +
                     "§e/radar lists §7-> Zeigt die vorhandenen Listen an.\n" +

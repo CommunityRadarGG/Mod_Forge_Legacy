@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -237,6 +238,16 @@ public class CommonHandler {
      */
     public @NotNull List<@NotNull PlayerInfo> getWorldPlayers() {
         return versionBridge.getWorldPlayers();
+    }
+
+    /**
+     * Updates a player display name and name tag by its uuid.
+     *
+     * @param uuid The uuid to update the corresponding player.
+     * @param oldPrefixes The old prefixes.
+     */
+    public void updatePlayerByUuid(final @NotNull UUID uuid, final @NotNull Set<String> oldPrefixes) {
+        versionBridge.updatePlayerByUuid(this, uuid, oldPrefixes);
     }
 
     /**
