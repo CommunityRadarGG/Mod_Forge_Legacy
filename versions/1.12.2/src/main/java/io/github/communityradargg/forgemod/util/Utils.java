@@ -133,7 +133,7 @@ public class Utils {
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
         if (!addonPrefix.isEmpty()) {
-            newDisplayName = new TextComponentString(addonPrefix.replace("&", "§") + " ").appendSibling(newDisplayName);
+            newDisplayName = new TextComponentString(addonPrefix + " ").appendSibling(newDisplayName);
         }
         player.setDisplayName(newDisplayName);
     }

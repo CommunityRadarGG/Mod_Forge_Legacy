@@ -125,7 +125,7 @@ public class Utils {
                 .getPrefix(player.getGameProfile().getId())
                 .replace("&", "§");
         if (!addonPrefix.isEmpty()) {
-            newDisplayName = new ChatComponentText(addonPrefix.replace("&", "§") + " ").appendSibling(newDisplayName);
+            newDisplayName = new ChatComponentText(addonPrefix + " ").appendSibling(newDisplayName);
         }
         player.setDisplayName(newDisplayName);
     }
