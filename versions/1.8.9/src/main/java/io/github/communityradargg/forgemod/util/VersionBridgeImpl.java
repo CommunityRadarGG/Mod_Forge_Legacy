@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The version bridge implementation for the 1.8.9 version.
+ */
 public class VersionBridgeImpl implements VersionBridge {
     private static final Logger LOGGER = LogManager.getLogger(VersionBridgeImpl.class);
 

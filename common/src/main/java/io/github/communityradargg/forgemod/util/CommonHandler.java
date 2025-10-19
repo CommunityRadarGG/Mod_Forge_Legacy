@@ -117,6 +117,12 @@ public class CommonHandler {
         this.onGrieferGames = onGrieferGames;
     }
 
+    /**
+     * Sets the GrieferGames connection state.
+     *
+     * @param isLocal The state, whether the connection is local.
+     * @param socketAddress The socket address.
+     */
     public void setOnGrieferGames(final boolean isLocal, final @Nullable SocketAddress socketAddress) {
         if (isLocal) {
             return;
