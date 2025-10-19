@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.communityradargg.forgemod.radarlistmanager.adapters;
+package io.github.communityradargg.forgemod.list.adapters;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -22,7 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
+import io.github.communityradargg.forgemod.list.RadarListEntry;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

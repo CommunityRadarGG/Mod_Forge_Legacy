@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.communityradargg.forgemod.radarlistmanager;
+package io.github.communityradargg.forgemod.list;
 
 /**
  * An enum representing the visibility state of a radar list.

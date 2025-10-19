@@ -19,8 +19,6 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListVisibility;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

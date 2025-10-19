@@ -15,7 +15,7 @@
  */
 package io.github.communityradargg.forgemod.command;
 
-import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
+import io.github.communityradargg.forgemod.list.RadarListEntry;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
 import io.github.communityradargg.forgemod.util.PlayerInfo;
