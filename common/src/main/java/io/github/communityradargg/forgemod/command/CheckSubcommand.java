@@ -18,11 +18,9 @@ package io.github.communityradargg.forgemod.command;
 import io.github.communityradargg.forgemod.radarlistmanager.RadarListEntry;
 import io.github.communityradargg.forgemod.util.CommonHandler;
 import io.github.communityradargg.forgemod.util.Messages;
+import io.github.communityradargg.forgemod.util.PlayerInfo;
 import io.github.communityradargg.forgemod.util.RadarMessage;
 import java.util.Optional;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -100,35 +98,32 @@ public class CheckSubcommand implements Subcommand {
      */
     private void handleCheckAllSubcommand() {
         boolean anyPlayerFound = false;
-        final NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
-        if (connection != null) {
-            for (final NetworkPlayerInfo networkPlayer : connection.getPlayerInfoMap()) {
-                if (networkPlayer.getGameProfile().getId() == null) {
-                    continue;
-                }
-
-                final Optional<RadarListEntry> listEntryOptional = commonHandler.getListManager()
-                        .getRadarListEntry(networkPlayer.getGameProfile().getId());
-                if (!listEntryOptional.isPresent()) {
-                    // player uuid is on no list
-                    continue;
-                }
-
-                if (!anyPlayerFound) {
-                    commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.EVERYONE)
-                            .build().getMessage());
-                    anyPlayerFound = true;
-                }
-
-                final RadarListEntry entry = listEntryOptional.get();
-                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.CHECK_ENTRY)
-                        .replaceWithColorCodes("{prefix}", commonHandler.getListManager().getPrefix(entry.uuid()))
-                        .replace("{name}", entry.name())
-                        .replace("{cause}", entry.cause())
-                        .replace("{entryCreationDate}", commonHandler.formatDateTime(entry.entryCreationDate()))
-                        .replace("{entryUpdateDate}", commonHandler.formatDateTime(entry.entryUpdateDate()))
-                        .build().getMessage());
+        for (final PlayerInfo playerInfo : commonHandler.getWorldPlayers()) {
+            if (playerInfo.getUuid() == null) {
+                continue;
             }
+
+            final Optional<RadarListEntry> listEntryOptional = commonHandler.getListManager()
+                    .getRadarListEntry(playerInfo.getUuid());
+            if (!listEntryOptional.isPresent()) {
+                // player uuid is on no list
+                continue;
+            }
+
+            if (!anyPlayerFound) {
+                commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.EVERYONE)
+                        .build().getMessage());
+                anyPlayerFound = true;
+            }
+
+            final RadarListEntry entry = listEntryOptional.get();
+            commonHandler.addMessageToChat(new RadarMessage.RadarMessageBuilder(Messages.Check.CHECK_ENTRY)
+                    .replaceWithColorCodes("{prefix}", commonHandler.getListManager().getPrefix(entry.uuid()))
+                    .replace("{name}", entry.name())
+                    .replace("{cause}", entry.cause())
+                    .replace("{entryCreationDate}", commonHandler.formatDateTime(entry.entryCreationDate()))
+                    .replace("{entryUpdateDate}", commonHandler.formatDateTime(entry.entryUpdateDate()))
+                    .build().getMessage());
         }
 
         if (!anyPlayerFound) {
