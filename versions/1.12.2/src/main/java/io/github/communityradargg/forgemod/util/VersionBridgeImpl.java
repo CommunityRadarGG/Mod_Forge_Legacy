@@ -72,4 +72,9 @@ public class VersionBridgeImpl implements VersionBridge {
     public boolean isPlayerListKeyPressed() {
         return Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isPressed();
     }
+
+    @Override
+    public @NotNull String wrapAndUnformatText(final @NotNull String text) {
+        return new TextComponentString(text).getUnformattedText();
+    }
 }

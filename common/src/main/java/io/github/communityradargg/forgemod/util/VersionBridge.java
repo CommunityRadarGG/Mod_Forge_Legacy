@@ -19,4 +19,6 @@ public interface VersionBridge {
     void updatePrefixes(final @NotNull CommonHandler commonHandler, final @NotNull Set<String> oldPrefixes);
 
     boolean isPlayerListKeyPressed();
+
+    @NotNull String wrapAndUnformatText(final @NotNull String text);
 }

@@ -260,6 +260,37 @@ public class CommonHandler {
     }
 
     /**
+     * Formats a prefix by replacing {@literal &} with {@literal §} and adding a space to the end.
+     *
+     * @param rawText The raw input text.
+     * @return Returns the formatted prefix.
+     */
+    public String formatPrefix(final @NotNull String rawText) {
+        return rawText.replace("&", "§") + " ";
+    }
+
+    /**
+     * Formats the text, wraps it into the version specific text component and gets the unformatted text from it for the possibility of comparison of texts.
+     *
+     * @param rawText The raw input text.
+     * @return Returns the unformatted text
+     */
+    public String unformatPrefixForCompare(final @NotNull String rawText) {
+        return versionBridge.wrapAndUnformatText(formatPrefix(rawText));
+    }
+
+    /**
+     * Checks if the given prefix candidate is matching with any of the old prefixes.
+     *
+     * @param prefixCandidate The possible prefix candidate.
+     * @param oldPrefixes The old prefixes.
+     * @return Returns {@code true} if there is a match, else {@code false}.
+     */
+    public boolean isPrefixMatching(final @NotNull String prefixCandidate, final @NotNull Set<@NotNull String> oldPrefixes) {
+        return oldPrefixes.stream().anyMatch(old -> unformatPrefixForCompare(old).equals(prefixCandidate));
+    }
+
+    /**
      * Gets the list manager.
      *
      * @return Returns the list manager.

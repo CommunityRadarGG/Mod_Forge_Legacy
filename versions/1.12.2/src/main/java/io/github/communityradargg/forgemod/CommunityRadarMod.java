@@ -49,6 +49,7 @@ public class CommunityRadarMod {
 
         registerEvents();
         registerCommands();
+
         LOGGER.info("Successfully loaded the mod '{}'", CommonHandler.MOD_ID);
     }
 

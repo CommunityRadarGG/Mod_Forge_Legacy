@@ -84,13 +84,12 @@ public class Utils {
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
     public static void updatePlayerNameTag(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
-        player.getPrefixes().removeIf(prefix -> oldPrefixes.stream().anyMatch(oldPrefix -> new TextComponentString(oldPrefix.replace("&", "§") + " ").getUnformattedText().equals(prefix.getUnformattedText())));
+        player.getPrefixes().removeIf(prefix -> commonHandler.isPrefixMatching(prefix.getUnformattedText(), oldPrefixes));
         final String addonPrefix = commonHandler.getListManager()
-                .getPrefix(player.getGameProfile().getId())
-                .replace("&", "§");
+                .getPrefix(player.getGameProfile().getId());
 
         if (!addonPrefix.isEmpty()) {
-            player.addPrefix(new TextComponentString(addonPrefix + " "));
+            player.addPrefix(new TextComponentString(commonHandler.formatPrefix(addonPrefix)));
         }
     }
 
@@ -123,17 +122,16 @@ public class Utils {
         final ITextComponent displayName = player.getDisplayName();
         ITextComponent newDisplayName = displayName;
         for (final String prefix : oldPrefixes) {
-            if (!displayName.getUnformattedText().startsWith(new TextComponentString(prefix.replace("&", "§") + " ").getUnformattedText())) {
+            if (!displayName.getUnformattedText().startsWith(commonHandler.unformatPrefixForCompare(prefix))) {
                 continue;
             }
             newDisplayName = displayName.getSiblings().get(displayName.getSiblings().size() - 1);
         }
 
         final String addonPrefix = commonHandler.getListManager()
-                .getPrefix(player.getGameProfile().getId())
-                .replace("&", "§");
+                .getPrefix(player.getGameProfile().getId());
         if (!addonPrefix.isEmpty()) {
-            newDisplayName = new TextComponentString(addonPrefix + " ").appendSibling(newDisplayName);
+            newDisplayName = new TextComponentString(commonHandler.formatPrefix(addonPrefix)).appendSibling(newDisplayName);
         }
         player.setDisplayName(newDisplayName);
     }

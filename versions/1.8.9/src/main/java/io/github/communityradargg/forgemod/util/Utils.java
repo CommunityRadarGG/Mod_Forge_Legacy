@@ -79,13 +79,12 @@ public class Utils {
      * @param oldPrefixes The old prefixes that need to be removed before adding the new one.
      */
     public static void updatePlayerNameTag(final @NotNull CommonHandler commonHandler, final @NotNull EntityPlayer player, final @NotNull Set<String> oldPrefixes) {
-        player.getPrefixes().removeIf(prefix -> oldPrefixes.stream().anyMatch(oldPrefix -> new ChatComponentText(oldPrefix.replace("&", "§") + " ").getUnformattedText().equals(prefix.getUnformattedText())));
+        player.getPrefixes().removeIf(prefix -> commonHandler.isPrefixMatching(prefix.getUnformattedText(), oldPrefixes));
         final String addonPrefix = commonHandler.getListManager()
-                .getPrefix(player.getGameProfile().getId())
-                .replace("&", "§");
+                .getPrefix(player.getGameProfile().getId());
 
         if (!addonPrefix.isEmpty()) {
-            player.addPrefix(new ChatComponentText(addonPrefix + " "));
+            player.addPrefix(new ChatComponentText(commonHandler.formatPrefix(addonPrefix)));
         }
     }
 
@@ -115,17 +114,16 @@ public class Utils {
         final IChatComponent displayName = player.getDisplayName();
         IChatComponent newDisplayName = displayName;
         for (final String prefix : oldPrefixes) {
-            if (!displayName.getUnformattedText().startsWith(new ChatComponentText(prefix.replace("&", "§") + " ").getUnformattedText())) {
+            if (!displayName.getUnformattedText().startsWith(commonHandler.unformatPrefixForCompare(prefix))) {
                 continue;
             }
             newDisplayName = displayName.getSiblings().get(displayName.getSiblings().size() - 1);
         }
 
         final String addonPrefix = commonHandler.getListManager()
-                .getPrefix(player.getGameProfile().getId())
-                .replace("&", "§");
+                .getPrefix(player.getGameProfile().getId());
         if (!addonPrefix.isEmpty()) {
-            newDisplayName = new ChatComponentText(addonPrefix + " ").appendSibling(newDisplayName);
+            newDisplayName = new ChatComponentText(commonHandler.formatPrefix(addonPrefix)).appendSibling(newDisplayName);
         }
         player.setDisplayName(newDisplayName);
     }
