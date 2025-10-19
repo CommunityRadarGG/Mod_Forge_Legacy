@@ -15,10 +15,8 @@ import java.net.SocketAddress;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -34,7 +32,7 @@ public class CommonHandler {
     private static final String MOJANG_API_NAME_TO_UUID = "https://api.mojang.com/users/profiles/minecraft/";
     private static final Pattern UUID_MOJANG_API_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
     private final DateTimeFormatter readableDateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-    private final Map<String, UUID> UUID_NAME_CACHE = new HashMap<>();
+    private final PlayerNameUuidCache playerNameUuidCache = new PlayerNameUuidCache();
     private final VersionBridge versionBridge;
     private final ListManager listManager;
     private boolean onGrieferGames = false;
@@ -154,16 +152,18 @@ public class CommonHandler {
         }
 
         // If the UUID has been cached, returning from the map.
-        if (UUID_NAME_CACHE.containsKey(playerName)) {
-            return CompletableFuture.completedFuture(Optional.of(UUID_NAME_CACHE.get(playerName)));
+        final Optional<UUID> uuidFromInitialCache = playerNameUuidCache.get(playerName);
+        if (uuidFromInitialCache.isPresent()) {
+            return CompletableFuture.completedFuture(uuidFromInitialCache);
         }
 
         // Checking if there is a player with same name in the loaded world. If so, returning UUID from EntityPlayer.
-        for (final PlayerInfo playerInfo : versionBridge.getWorldPlayers()) {
-            if (playerInfo.getPlayerName().equalsIgnoreCase(playerName) && playerInfo.getUuid() != null) {
-                UUID_NAME_CACHE.put(playerName, playerInfo.getUuid());
-                return CompletableFuture.completedFuture(Optional.of(playerInfo.getUuid()));
-            }
+        final List<PlayerInfo> playerInfos = versionBridge.getWorldPlayers();
+        playerNameUuidCache.putAll(playerInfos);
+
+        final Optional<UUID> uuidFromWorldLookup = playerNameUuidCache.get(playerName);
+        if (uuidFromWorldLookup.isPresent()) {
+            return CompletableFuture.completedFuture(uuidFromWorldLookup);
         }
 
         if (playerName.startsWith("!") || playerName.startsWith("~")) {
@@ -205,7 +205,7 @@ public class CommonHandler {
                     }
 
                     final UUID uuid = UUID.fromString(UUID_MOJANG_API_PATTERN.matcher(json.get("id").getAsString()).replaceAll("$1-$2-$3-$4-$5"));
-                    UUID_NAME_CACHE.put(playerName, uuid);
+                    playerNameUuidCache.put(playerName, uuid);
                     connection.disconnect();
                     return Optional.of(uuid);
                 }

@@ -9,4 +9,5 @@ dependencies {
     compileOnly(rootProject.libs.jetbrainsJavaAnnotations)
     compileOnly(rootProject.libs.gson)
     compileOnly(rootProject.libs.log4j)
+    compileOnly(rootProject.libs.guava)
 }

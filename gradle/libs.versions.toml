@@ -8,6 +8,7 @@ spotless = "7.2.1"
 jetbrainsJavaAnnotations = "26.0.2-1"
 gson = "2.2.4" # needs to stay on 1.8.9 version
 log4j = "2.0-beta9" # needs to stay on 1.8.9 version
+guava = "17.0"
 
 # 1.8.9 (Forge)
 minecraft189 = "1.8.9"
@@ -24,6 +25,7 @@ forge1122 = "1.12.2-14.23.5.2847"
 jetbrainsJavaAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsJavaAnnotations" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 log4j = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
 # 1.8.9 (Forge)
 minecraft189 = { group = "com.mojang", name = "minecraft", version.ref = "minecraft189" }
