@@ -73,7 +73,6 @@ public class ListManager {
         directoryPath = createDirectoryPath();
     }
 
-    // TODO Look if this can be optimized in Java 8
     /**
      * Creates the list directory path.
      *
