@@ -43,6 +43,7 @@ public class ClientConnectionDisconnectListener {
     @SubscribeEvent
     public void onFMLNetworkClientConnectedToServer(final FMLNetworkEvent.ClientConnectedToServerEvent event) {
         commonHandler.setOnGrieferGames(event.isLocal, event.manager.getRemoteAddress());
+        commonHandler.updatePlayerNameUuidCache();
     }
 
     /**

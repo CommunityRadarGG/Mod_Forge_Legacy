@@ -257,6 +257,13 @@ public class CommonHandler {
     }
 
     /**
+     * Adds all world players to the player name UUID cache.
+     */
+    public void updatePlayerNameUuidCache() {
+        playerNameUuidCache.putAll(versionBridge.getWorldPlayers());
+    }
+
+    /**
      * Handles the key input event.
      */
     public void handleKeyInputEvent() {
