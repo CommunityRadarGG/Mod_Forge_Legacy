@@ -1,16 +1,17 @@
 package io.github.communityradargg.forgemod.util;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VersionBridgeImpl implements VersionBridge {
     private static final Logger LOGGER = LogManager.getLogger(VersionBridgeImpl.class);
@@ -41,17 +42,17 @@ public class VersionBridgeImpl implements VersionBridge {
     }
 
     @Override
-    public Optional<UUID> getPlayerUuidByNameFromWorld(final @NotNull String playerName) {
+    public @NotNull List<@NotNull PlayerInfo> getWorldPlayers() {
         final NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
         if (connection == null) {
-            return Optional.empty();
+            return Collections.emptyList();
         }
 
-        for (final NetworkPlayerInfo networkPlayerInfo : connection.getPlayerInfoMap()) {
-            if (networkPlayerInfo.getGameProfile().getName().equalsIgnoreCase(playerName)) {
-                return Optional.of(networkPlayerInfo.getGameProfile().getId());
-            }
-        }
-        return Optional.empty();
+        return connection.getPlayerInfoMap().stream()
+                .map(networkPlayerInfo -> {
+                    final GameProfile gameProfile = networkPlayerInfo.getGameProfile();
+                    return new PlayerInfo(gameProfile.getId(), gameProfile.getName());
+                })
+                .collect(Collectors.toList());
     }
 }

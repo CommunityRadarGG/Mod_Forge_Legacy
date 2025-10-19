@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -151,10 +152,11 @@ public class CommonHandler {
         }
 
         // Checking if there is a player with same name in the loaded world. If so, returning UUID from EntityPlayer.
-        final Optional<UUID> playerUuid = versionBridge.getPlayerUuidByNameFromWorld(playerName);
-        if (playerUuid.isPresent()) {
-            UUID_NAME_CACHE.put(playerName, playerUuid.get());
-            return CompletableFuture.completedFuture(playerUuid);
+        for (final PlayerInfo playerInfo : versionBridge.getWorldPlayers()) {
+            if (playerInfo.getPlayerName().equalsIgnoreCase(playerName) && playerInfo.getUuid() != null) {
+                UUID_NAME_CACHE.put(playerName, playerInfo.getUuid());
+                return CompletableFuture.completedFuture(Optional.of(playerInfo.getUuid()));
+            }
         }
 
         if (playerName.startsWith("!") || playerName.startsWith("~")) {
@@ -226,6 +228,15 @@ public class CommonHandler {
      */
     public void addMessageToChat(final @NotNull String message) {
         versionBridge.addMessageToChat(message);
+    }
+
+    /**
+     * Gets the player info data for all players in the current world.
+     *
+     * @return Returns the player info data.
+     */
+    public @NotNull List<@NotNull PlayerInfo> getWorldPlayers() {
+        return versionBridge.getWorldPlayers();
     }
 
     /**

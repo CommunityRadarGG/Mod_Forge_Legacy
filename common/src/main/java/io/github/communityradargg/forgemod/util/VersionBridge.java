@@ -1,8 +1,7 @@
 package io.github.communityradargg.forgemod.util;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
 
 public interface VersionBridge {
     @NotNull String getVersion();
@@ -11,5 +10,5 @@ public interface VersionBridge {
 
     boolean isNotInWorld();
 
-    Optional<UUID> getPlayerUuidByNameFromWorld(final @NotNull String playerName);
+    @NotNull List<@NotNull PlayerInfo> getWorldPlayers();
 }
