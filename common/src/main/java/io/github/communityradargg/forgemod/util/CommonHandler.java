@@ -251,6 +251,15 @@ public class CommonHandler {
     }
 
     /**
+     * Handles the key input event.
+     */
+    public void handleKeyInputEvent() {
+        if (onGrieferGames && versionBridge.isPlayerListKeyPressed()) {
+            versionBridge.updatePrefixes(this, listManager.getExistingPrefixes());
+        }
+    }
+
+    /**
      * Gets the list manager.
      *
      * @return Returns the list manager.

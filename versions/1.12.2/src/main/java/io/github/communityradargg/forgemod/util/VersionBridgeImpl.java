@@ -62,4 +62,14 @@ public class VersionBridgeImpl implements VersionBridge {
     public void updatePlayerByUuid(final @NotNull CommonHandler commonHandler, final @NotNull UUID uuid, final @NotNull Set<@NotNull String> oldPrefixes) {
         Utils.updatePlayerByUuid(commonHandler, uuid, oldPrefixes);
     }
+
+    @Override
+    public void updatePrefixes(final @NotNull CommonHandler commonHandler, final @NotNull Set<String> oldPrefixes) {
+        Utils.updatePrefixes(commonHandler, oldPrefixes);
+    }
+
+    @Override
+    public boolean isPlayerListKeyPressed() {
+        return Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isPressed();
+    }
 }

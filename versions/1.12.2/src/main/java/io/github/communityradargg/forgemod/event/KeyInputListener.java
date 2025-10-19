@@ -16,8 +16,6 @@
 package io.github.communityradargg.forgemod.event;
 
 import io.github.communityradargg.forgemod.util.CommonHandler;
-import io.github.communityradargg.forgemod.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.jetbrains.annotations.NotNull;
@@ -44,15 +42,6 @@ public class KeyInputListener {
      */
     @SubscribeEvent
     public void onKeyInput(final InputEvent.KeyInputEvent event) {
-        if (!commonHandler.isOnGrieferGames()) {
-            return;
-        }
-
-        final Minecraft mc = Minecraft.getMinecraft();
-        if (!mc.gameSettings.keyBindPlayerList.isPressed()) {
-            return;
-        }
-
-        Utils.updatePrefixes(commonHandler, commonHandler.getListManager().getExistingPrefixes());
+        commonHandler.handleKeyInputEvent();
     }
 }

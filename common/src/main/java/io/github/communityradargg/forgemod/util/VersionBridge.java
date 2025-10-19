@@ -15,4 +15,8 @@ public interface VersionBridge {
     @NotNull List<@NotNull PlayerInfo> getWorldPlayers();
 
     void updatePlayerByUuid(final @NotNull CommonHandler commonHandler, final @NotNull UUID uuid, final @NotNull Set<@NotNull String> oldPrefixes);
+
+    void updatePrefixes(final @NotNull CommonHandler commonHandler, final @NotNull Set<String> oldPrefixes);
+
+    boolean isPlayerListKeyPressed();
 }
