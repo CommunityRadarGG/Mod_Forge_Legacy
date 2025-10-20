@@ -80,12 +80,17 @@ subprojects {
                 )
             }
 
-            matching { it.name == "remapJar" }.configureEach {
-                doLast {
-                    val jar = outputs.files.singleFile
-                    val targetDir = rootProject.layout.buildDirectory.dir("libs").get().asFile
-                    targetDir.mkdirs()
-                    jar.copyTo(targetDir.resolve(jar.name), overwrite = true)
+            plugins.withId(rootProject.libs.plugins.ggEssentialLoom.get().pluginId) {
+                val remapJarTask = named("remapJar")
+
+                register<Copy>("copyRemappedJars") {
+                    dependsOn(remapJarTask)
+                    from(remapJarTask.map { it.outputs.files })
+                    into(rootProject.layout.buildDirectory.dir("libs"))
+                }
+
+                named("build") {
+                    finalizedBy("copyRemappedJars")
                 }
             }
         }
