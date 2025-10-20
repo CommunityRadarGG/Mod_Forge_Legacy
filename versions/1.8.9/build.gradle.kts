@@ -4,6 +4,7 @@ val versionText: String by extra
 val modIdText: String by extra
 
 dependencies {
+    include(project(":common"))
     implementation(project(":common"))
 
     minecraft(rootProject.libs.minecraft189)
