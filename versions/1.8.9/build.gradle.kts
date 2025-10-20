@@ -4,7 +4,6 @@ val versionText: String by extra
 val modIdText: String by extra
 
 dependencies {
-    include(project(":common"))
     implementation(project(":common"))
 
     minecraft(rootProject.libs.minecraft189)
@@ -19,6 +18,10 @@ loom {
 }
 
 tasks {
+    named<Jar>("jar") {
+        from(project(":common").sourceSets.main.get().output)
+    }
+
     withType<ProcessResources> {
         // https://github.com/gradle/gradle/issues/861
         inputs.property("version", versionText)
