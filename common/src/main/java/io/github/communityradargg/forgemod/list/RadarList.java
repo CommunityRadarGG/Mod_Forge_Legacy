@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RadarList {
     private static final Logger LOGGER = LogManager.getLogger(RadarList.class);
-    private final transient CommonHandler commonHandler;
     @SerializedName("VERSION")
     @SuppressWarnings("unused") // needed in future
     private final int version = 1;
@@ -51,6 +50,7 @@ public class RadarList {
     @SerializedName("prefix")
     private String prefix;
     private transient String url;
+    private transient CommonHandler commonHandler;
 
     /**
      * Constructs a {@link RadarList}.
@@ -213,5 +213,14 @@ public class RadarList {
         if (visibility == RadarListVisibility.PUBLIC) {
             loadPublicList();
         }
+    }
+
+    /**
+     * Sets the common handler. Only use this method in combination with for example {@link com.google.gson.Gson}.
+     *
+     * @param commonHandler The common handler.
+     */
+    public void setCommonHandler(final @NotNull CommonHandler commonHandler) {
+        this.commonHandler = commonHandler;
     }
 }

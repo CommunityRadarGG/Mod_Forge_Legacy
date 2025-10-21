@@ -50,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ListManager {
     private static final Logger LOGGER = LogManager.getLogger(ListManager.class);
-    static final Gson GSON = new GsonBuilder()
+    protected static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter())
             .registerTypeAdapter(Map.class, new GsonRadarListPlayerMapAdapter())
@@ -294,6 +294,7 @@ public class ListManager {
     private @NotNull Optional<RadarList> loadRadarListFromFile(final @NotNull String filePath) {
         try (final FileReader reader = new FileReader(filePath)) {
             final RadarList list = GSON.fromJson(reader, new TypeToken<RadarList>() {}.getType());
+            list.setCommonHandler(commonHandler);
             list.setUrl(filePath);
             if (list.validateList()) {
                 return Optional.of(list);
