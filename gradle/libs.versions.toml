@@ -4,14 +4,38 @@ ggEssentialLoom = "1.11.37"
 spotless = "7.2.1"
 
 # libraries
-minecraft = "1.8.9"
-mcpMappings = "22-1.8.9"
-forge = "1.8.9-11.15.1.2318-1.8.9"
+# general libs
+jetbrainsJavaAnnotations = "26.0.2-1"
+gson = "2.2.4" # needs to stay on 1.8.9 version
+log4j = "2.0-beta9" # needs to stay on 1.8.9 version
+guava = "17.0"
+
+# 1.8.9 (Forge)
+minecraft189 = "1.8.9"
+mcpMappings189 = "22-1.8.9"
+forge189 = "1.8.9-11.15.1.2318-1.8.9"
+
+# 1.12.2 (Forge)
+minecraft1122 = "1.12.2"
+mcpMappings1122 = "39-1.12"
+forge1122 = "1.12.2-14.23.5.2847"
 
 [libraries]
-minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
-mcpMappings = { group = "de.oceanlabs.mcp", name = "mcp_stable", version.ref = "mcpMappings" }
-forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
+# general libraries
+jetbrainsJavaAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsJavaAnnotations" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+log4j = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+
+# 1.8.9 (Forge)
+minecraft189 = { group = "com.mojang", name = "minecraft", version.ref = "minecraft189" }
+mcpMappings189 = { group = "de.oceanlabs.mcp", name = "mcp_stable", version.ref = "mcpMappings189" }
+forge189 = { group = "net.minecraftforge", name = "forge", version.ref = "forge189" }
+
+# 1.12.2 (Forge)
+minecraft1122 = { group = "com.mojang", name = "minecraft", version.ref = "minecraft1122" }
+mcpMappings1122 = { group = "de.oceanlabs.mcp", name = "mcp_stable", version.ref = "mcpMappings1122" }
+forge1122 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1122" }
 
 [plugins]
 ggEssentialLoom = { id = "gg.essential.loom", version.ref = "ggEssentialLoom" }
