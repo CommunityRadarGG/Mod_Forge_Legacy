@@ -30,6 +30,30 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    plugins.withId("com.diffplug.spotless") {
+        spotless {
+            java {
+                licenseHeaderFile(rootProject.file("HEADER"))
+                endWithNewline()
+                trimTrailingWhitespace()
+                removeUnusedImports()
+                removeWildcardImports()
+            }
+
+            kotlinGradle {
+                licenseHeaderFile(rootProject.file("HEADER"), "(plugins|import|buildscript|pluginManagement|base)")
+                endWithNewline()
+                trimTrailingWhitespace()
+            }
+
+            kotlin {
+                licenseHeaderFile(rootProject.file("HEADER"))
+                endWithNewline()
+                trimTrailingWhitespace()
+            }
+        }
+    }
 }
 
 subprojects {
@@ -94,22 +118,6 @@ subprojects {
                 }
             }
         }
-    }
-}
-
-spotless {
-    java {
-        licenseHeaderFile(rootProject.file("HEADER"))
-        endWithNewline()
-        trimTrailingWhitespace()
-        removeUnusedImports()
-        removeWildcardImports()
-    }
-
-    kotlin {
-        licenseHeaderFile(rootProject.file("HEADER"))
-        endWithNewline()
-        trimTrailingWhitespace()
     }
 }
 

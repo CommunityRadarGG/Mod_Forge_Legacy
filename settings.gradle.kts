@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "communityradar-forge"
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -40,6 +38,8 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
 }
+
+rootProject.name = "communityradar-forge"
 
 include("common")
 
