@@ -42,7 +42,7 @@ allprojects {
             }
 
             kotlinGradle {
-                licenseHeaderFile(rootProject.file("HEADER"), "(plugins|import|buildscript|pluginManagement)")
+                licenseHeaderFile(rootProject.file("HEADER"), "(plugins|import|buildscript|pluginManagement|base)")
                 endWithNewline()
                 trimTrailingWhitespace()
             }
